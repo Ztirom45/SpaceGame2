@@ -22,15 +22,6 @@ struct Star{
     size:f32,
 }
 
-struct Stars{
-    stars:Vec<Star>;
-}
-impl Stars{
-    pub fn draw(self){
-        
-    }
-
-}
 
 fn main() -> Result<(), String> /*Error Handling*/{
     //inititlizing SDL

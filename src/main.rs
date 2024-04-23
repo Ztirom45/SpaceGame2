@@ -21,7 +21,33 @@ struct Star{
     y:i32,
     size:f32,
 }
+struct Sky{
+    stars:Vec<Star>
+}
+impl Sky{
+    pub fn draw(&self, canvas: &mut sdl2::render::Canvas<sdl2::video::Window>) -> Result<(), String>{
+        canvas.set_draw_color(Color::RGB(255, 255, 255));
+        // A draw a rectangle which almost fills our window with it !
 
+        for star in self.stars.iter(){
+            canvas.fill_rect(Rect::new(star.x, star.y, star.size as u32, star.size as u32)).map_err(|e| e.to_string())?;
+
+        }
+        Ok(())
+    }
+
+    pub fn update(&mut self){
+        for star in self.stars.iter_mut(){
+            star.y += (SPEED*star.size) as i32;
+
+        }
+        //remove star witout the screen
+        self.stars.retain(|i| (i.y as u32) < SCREEN_SIZE);
+        self.stars.push(Star{x:rand::thread_rng().gen_range(0..(SCREEN_SIZE as i32)-(MAX_STAR_SIZE as i32)),
+        y:0,
+        size:rand::thread_rng().gen_range(MIN_STAR_SIZE..MAX_STAR_SIZE)});
+    }
+}
 
 fn main() -> Result<(), String> /*Error Handling*/{
     //inititlizing SDL
@@ -42,8 +68,8 @@ fn main() -> Result<(), String> /*Error Handling*/{
     
 
     //data
-    let mut stars:Vec<Star> = Vec::new();
-    
+    let mut sky:Sky = Sky{stars:Vec::new()};
+
     'running: loop {
         for event in event_pump.poll_iter() {
             match event {
@@ -57,26 +83,13 @@ fn main() -> Result<(), String> /*Error Handling*/{
         }
         canvas.set_draw_color(Color::RGB(0,0,0));
         canvas.clear();
-        canvas.set_draw_color(Color::RGB(255, 255, 255));
-        // A draw a rectangle which almost fills our window with it !
-        for star in stars.iter(){
-            canvas.fill_rect(Rect::new(star.x, star.y, star.size as u32, star.size as u32)).map_err(|e| e.to_string())?;
 
-        }
+        sky.draw(&mut canvas).map_err(|e| e.to_string())?;
         canvas.present();
         ::std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 30));
         //procces stars
-        for star in stars.iter_mut(){
-            star.y += (SPEED*star.size) as i32;
-
-        }
-        //remove star witout the screen
-        stars.retain(|i| (i.y as u32) < SCREEN_SIZE);
-        stars.push(Star{x:rand::thread_rng().gen_range(0..(SCREEN_SIZE as i32)-(MAX_STAR_SIZE as i32)),
-        y:0,
-        size:rand::thread_rng().gen_range(MIN_STAR_SIZE..MAX_STAR_SIZE)});
+        sky.update();
     }
-    //println!("Hello, world!");
     
     Ok(())
 }

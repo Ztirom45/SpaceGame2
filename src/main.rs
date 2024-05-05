@@ -4,7 +4,11 @@ use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use sdl2::pixels::Color;
 use sdl2::rect::Rect;
+use sdl2::surface::Surface;
+use sdl2::render::Texture;
+
 use std::time::Duration;
+
 use rand;
 use rand::Rng;
 //use std::vec::Vec;
@@ -49,12 +53,34 @@ impl Sky{
     }
 }
 
+
+struct Player<'a>{
+    x:i32,
+    y:i32,
+    texture:Texture<'a>,
+}
+impl Player<'_>{
+    pub fn draw(&self, canvas: &mut sdl2::render::Canvas<sdl2::video::Window>) -> Result<(), String>{
+        canvas.copy(&self.texture,None,Rect::new(self.x,self.y,52,56)).map_err(|e| e.to_string())?;
+        Ok(())
+    }
+    pub fn update(&mut self){
+        self.y+= 1; 
+    }
+}
+
+/*
+//Just for debugug pourposes
+fn print_type_of<T>(_: &T) {
+    println!("{}", std::any::type_name::<T>())
+}*/
+
 fn main() -> Result<(), String> /*Error Handling*/{
     //inititlizing SDL
     let sdl_context = sdl2::init()?;
     let video_subsystem = sdl_context.video()?;
     let window = video_subsystem
-        .window("rusty starfeald Paralax", SCREEN_SIZE, SCREEN_SIZE)
+        .window("rusty starfeld paralax", SCREEN_SIZE, SCREEN_SIZE)
         .position_centered()
         .opengl()
         .build()
@@ -64,12 +90,16 @@ fn main() -> Result<(), String> /*Error Handling*/{
     canvas.set_draw_color(Color::RGB(0, 0, 0));
     canvas.clear();
     canvas.present();
-    let mut event_pump = sdl_context.event_pump()?;
+    let mut event_pump = sdl_context.event_pump()?; 
+    let texture_creator = canvas.texture_creator();
     
-
+    //textures
+    let surface = Surface::load_bmp("rsc/img/Ship.bmp").map_err(|e| e.to_string())?;
+    let prism_fighter = Texture::from_surface(&surface, &texture_creator).unwrap();
     //data
     let mut sky:Sky = Sky{stars:Vec::new()};
-
+    let mut player:Player = Player{x:1,y:1,texture:prism_fighter};
+    //debuging:   
     'running: loop {
         for event in event_pump.poll_iter() {
             match event {
@@ -85,10 +115,12 @@ fn main() -> Result<(), String> /*Error Handling*/{
         canvas.clear();
 
         sky.draw(&mut canvas).map_err(|e| e.to_string())?;
+        player.draw(&mut canvas).map_err(|e| e.to_string())?;
         canvas.present();
-        ::std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 30));
+        std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 30));
         //procces stars
         sky.update();
+        player.update();
     }
     
     Ok(())

@@ -108,6 +108,9 @@ fn main() -> Result<(), String> /*Error Handling*/{
                     keycode: Some(Keycode::Escape),
                     ..
                 } => break 'running,
+                Event::KeyDown { keycode: Some(Keycode::Left), repeat: false, .. } => {
+                    player.x -= 1;
+                },
                 _ => {}
             }
         }

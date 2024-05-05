@@ -1,12 +1,11 @@
 extern crate sdl2;
 
 use sdl2::event::Event;
-use sdl2::keyboard::Keycode;
+use sdl2::keyboard::{Keycode, Scancode,KeyboardState};
 use sdl2::pixels::Color;
 use sdl2::rect::Rect;
 use sdl2::surface::Surface;
 use sdl2::render::Texture;
-
 use std::time::Duration;
 
 use rand;
@@ -57,6 +56,7 @@ impl Sky{
 struct Player<'a>{
     x:i32,
     y:i32,
+    speed:i32,
     texture:Texture<'a>,
 }
 impl Player<'_>{
@@ -64,8 +64,19 @@ impl Player<'_>{
         canvas.copy(&self.texture,None,Rect::new(self.x,self.y,52,56)).map_err(|e| e.to_string())?;
         Ok(())
     }
-    pub fn update(&mut self){
-        self.y+= 1; 
+    pub fn update(&mut self,e: &sdl2::EventPump){
+        if e.keyboard_state().is_scancode_pressed(Scancode::A){
+            self.x -= self.speed;
+        }
+        if e.keyboard_state().is_scancode_pressed(Scancode::D){
+            self.x += self.speed;
+        }
+        if e.keyboard_state().is_scancode_pressed(Scancode::W){
+            self.y -= self.speed;
+        }
+        if e.keyboard_state().is_scancode_pressed(Scancode::S){
+            self.y += self.speed;
+        }
     }
 }
 
@@ -98,7 +109,7 @@ fn main() -> Result<(), String> /*Error Handling*/{
     let prism_fighter = Texture::from_surface(&surface, &texture_creator).unwrap();
     //data
     let mut sky:Sky = Sky{stars:Vec::new()};
-    let mut player:Player = Player{x:1,y:1,texture:prism_fighter};
+    let mut player:Player = Player{x:1,y:1,speed:10,texture:prism_fighter};
     //debuging:   
     'running: loop {
         for event in event_pump.poll_iter() {
@@ -114,6 +125,7 @@ fn main() -> Result<(), String> /*Error Handling*/{
                 _ => {}
             }
         }
+
         canvas.set_draw_color(Color::RGB(0,0,0));
         canvas.clear();
 
@@ -123,7 +135,7 @@ fn main() -> Result<(), String> /*Error Handling*/{
         std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 30));
         //procces stars
         sky.update();
-        player.update();
+        player.update(&event_pump);
     }
     
     Ok(())

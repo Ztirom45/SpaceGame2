@@ -21,3 +21,7 @@ pub const SHOT_H:u32 = 14;
 pub const SHOT_SPWAN_OFFSET:i32 = 16;
 pub const SHOT_SPAWN_DELAY:u8 = 4;
 pub const SHOT_START_SPEED:i32 = 12;
+
+//Enemy
+pub const ENEMY_W:u32 = 19;
+pub const ENEMY_H:u32 = 21;

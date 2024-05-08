@@ -18,10 +18,12 @@ mod sky;
 mod config;
 mod player;
 mod gun;
+mod enemy;
 use crate::config::*;
 use crate::sky::*;
 use crate::player::*;
 use crate::gun::*;
+use crate::enemy::*;
 
 /*
 //Just for debugug pourposes
@@ -75,6 +77,14 @@ fn main() -> Result<(), String> /*Error Handling*/{
             last_time_shot:0u8
         },
     };
+    let mut enemy:Enemy = Enemy{
+        x:400,
+        y:100,
+        speed:7,
+        lives:1,
+        texture:&img["Enemy"],
+        motion_counter:0
+    };
     //debuging:   
     'running: loop {
         for event in event_pump.poll_iter() {
@@ -96,12 +106,14 @@ fn main() -> Result<(), String> /*Error Handling*/{
 
         sky.draw(&mut canvas).unwrap();
         player.draw(&mut canvas).unwrap();
+        enemy.draw(&mut canvas).unwrap();
 
         canvas.present();
         std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 30));
         //procces stars
         sky.update();
         player.update(&event_pump);
+        enemy.update();
     }
     
     Ok(())

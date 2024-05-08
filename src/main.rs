@@ -1,86 +1,27 @@
+/*
+Code written by Ztirom45
+LICENSE: GPL4
+contact: https://github.com/Ztirom45
+*/
 extern crate sdl2;
 
 use sdl2::event::Event;
-use sdl2::keyboard::{Keycode, Scancode};
+use sdl2::keyboard::Keycode;
 use sdl2::pixels::Color;
-use sdl2::rect::Rect;
 use sdl2::surface::Surface;
 use sdl2::render::Texture;
 use std::collections::HashMap;
 use std::fs;
 use std::time::Duration;
 
-use rand;
-use rand::Rng;
-//use std::vec::Vec;
-
-//consts
-const SCREEN_SIZE:u32 = 800;
-const MIN_STAR_SIZE:f32 = 2.0;
-const MAX_STAR_SIZE:f32 = 6.0;
-const SPEED:f32 = 2.5;
-
-//structs
-struct Star{
-    x:i32,
-    y:i32,
-    size:f32,
-}
-struct Sky{
-    stars:Vec<Star>
-}
-impl Sky{
-    pub fn draw(&self, canvas: &mut sdl2::render::Canvas<sdl2::video::Window>) -> Result<(), String>{
-        canvas.set_draw_color(Color::RGB(255, 255, 255));
-        // A draw a rectangle which almost fills our window with it !
-
-        for star in self.stars.iter(){
-            canvas.fill_rect(Rect::new(star.x, star.y, star.size as u32, star.size as u32)).map_err(|e| e.to_string())?;
-
-        }
-        Ok(())
-    }
-
-    pub fn update(&mut self){
-        for star in self.stars.iter_mut(){
-            star.y += (SPEED*star.size) as i32;
-
-        }
-        //remove star witout the screen
-        self.stars.retain(|i| (i.y as u32) < SCREEN_SIZE);
-        self.stars.push(Star{x:rand::thread_rng().gen_range(0..(SCREEN_SIZE as i32)-(MAX_STAR_SIZE as i32)),
-        y:0,
-        size:rand::thread_rng().gen_range(MIN_STAR_SIZE..MAX_STAR_SIZE)});
-    }
-}
-
-
-struct Player<'a>{
-    x:i32,
-    y:i32,
-    speed:i32,
-    texture:&'a Texture<'a>,
-}
-impl Player<'_>{
-    pub fn draw(&self, canvas: &mut sdl2::render::Canvas<sdl2::video::Window>) -> Result<(), String>{
-        canvas.copy(&self.texture,None,Rect::new(self.x,self.y,52,56)).map_err(|e| e.to_string())?;
-        Ok(())
-    }
-    pub fn update(&mut self,e: &sdl2::EventPump){
-        if e.keyboard_state().is_scancode_pressed(Scancode::A){
-            self.x -= self.speed;
-        }
-        if e.keyboard_state().is_scancode_pressed(Scancode::D){
-            self.x += self.speed;
-        }
-        if e.keyboard_state().is_scancode_pressed(Scancode::W){
-            self.y -= self.speed;
-        }
-        if e.keyboard_state().is_scancode_pressed(Scancode::S){
-            self.y += self.speed;
-        }
-    }
-}
+mod sky;
+mod config;
+mod player;
+mod gun;
+use crate::config::*;
+use crate::sky::*;
+use crate::player::*;
+use crate::gun::*;
 
 /*
 //Just for debugug pourposes
@@ -113,14 +54,12 @@ fn main() -> Result<(), String> /*Error Handling*/{
         let path = file.unwrap().path();
         let name = path.file_name().unwrap().to_str().unwrap();
         let name:String = name[0..name.len()-4].to_string();//remove .bmp
-        println!("{}",name);
         let path = path.to_str().unwrap().to_string();
+        
         let surface = Surface::load_bmp(path.clone()).map_err(|e| e.to_string())?;
         img.entry(name.clone()).or_insert(
             Texture::from_surface(&surface, &texture_creator).unwrap()
-    );
- 
-        println!("{}", &path);
+        );
     }
     
     //data

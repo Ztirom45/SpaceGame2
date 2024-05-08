@@ -7,15 +7,15 @@ use sdl2::rect::Rect;
 use sdl2::render::Texture;
 use crate::config::*;
 
-struct shot<'a>{
+pub struct Shot<'a>{
     pub x:i32,
     pub y:i32,
     pub speed:i32,
     pub texture:&'a Texture<'a>,
 }
-impl shot<'_>{
+impl Shot<'_>{
     pub fn draw(&self, canvas: &mut sdl2::render::Canvas<sdl2::video::Window>) -> Result<(), String>{
-        canvas.copy(&self.texture,None,Rect::new(self.x,self.y,52,56)).map_err(|e| e.to_string())?;
+        canvas.copy(&self.texture,None,Rect::new(self.x,self.y,6,28)).map_err(|e| e.to_string())?;
         Ok(())
     }
     pub fn update(&mut self){

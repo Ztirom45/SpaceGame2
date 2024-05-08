@@ -65,6 +65,7 @@ fn main() -> Result<(), String> /*Error Handling*/{
     //data
     let mut sky:Sky = Sky{stars:Vec::new()};
     let mut player:Player = Player{x:1,y:1,speed:10,texture:&img["Ship"]};
+    let mut shot:Shot = Shot{x:1,y:1,speed:10,texture:&img["Shot"]};
     //debuging:   
     'running: loop {
         for event in event_pump.poll_iter() {

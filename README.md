@@ -1,7 +1,7 @@
 # SpaceGame 2
 version 2 of SpacGame using SDL, but now in rust
 
-##Fetures
+## Fetures
 - a player
 - shots
 - enemys

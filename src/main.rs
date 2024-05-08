@@ -81,8 +81,9 @@ fn main() -> Result<(), String> /*Error Handling*/{
     
     let mut formation:Formation = Formation{ 
         enemys:Vec::new(),
+        texture:&img["Enemy"],
     };
-    formation.init(&img);
+    formation.init();
     //debuging:   
     'running: loop {
         for event in event_pump.poll_iter() {

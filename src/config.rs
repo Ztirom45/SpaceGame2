@@ -23,5 +23,5 @@ pub const SHOT_SPAWN_DELAY:u8 = 4;
 pub const SHOT_START_SPEED:i32 = 12;
 
 //Enemy
-pub const ENEMY_W:u32 = 19;
-pub const ENEMY_H:u32 = 21;
+pub const ENEMY_W:u32 = 19*2;
+pub const ENEMY_H:u32 = 21*2;

@@ -44,7 +44,9 @@ impl Gun<'_>{
         self.shots.iter_mut().for_each(|shot| shot.update());
         //remove star witout the screen
         self.shots.retain(|i| (i.rect.y as u32) < SCREEN_SIZE);
-        self.last_time_shot += 1;
+        if self.last_time_shot <= 10{
+            self.last_time_shot += 1;
+        }
     }
 
     pub fn shot(&mut self, x:i32,y:i32){

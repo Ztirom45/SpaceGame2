@@ -1,11 +1,13 @@
 extern crate sdl2;
 
 use sdl2::event::Event;
-use sdl2::keyboard::{Keycode, Scancode,KeyboardState};
+use sdl2::keyboard::{Keycode, Scancode};
 use sdl2::pixels::Color;
 use sdl2::rect::Rect;
 use sdl2::surface::Surface;
 use sdl2::render::Texture;
+use std::collections::HashMap;
+use std::fs;
 use std::time::Duration;
 
 use rand;
@@ -57,7 +59,7 @@ struct Player<'a>{
     x:i32,
     y:i32,
     speed:i32,
-    texture:Texture<'a>,
+    texture:&'a Texture<'a>,
 }
 impl Player<'_>{
     pub fn draw(&self, canvas: &mut sdl2::render::Canvas<sdl2::video::Window>) -> Result<(), String>{
@@ -104,12 +106,26 @@ fn main() -> Result<(), String> /*Error Handling*/{
     let mut event_pump = sdl_context.event_pump()?; 
     let texture_creator = canvas.texture_creator();
     
-    //textures
-    let surface = Surface::load_bmp("rsc/img/Ship.bmp").map_err(|e| e.to_string())?;
-    let prism_fighter = Texture::from_surface(&surface, &texture_creator).unwrap();
+    //loads texture by name into the hashmap
+    //use it by borrowing &img["texture name"]
+    let mut img:HashMap<String, Texture> = HashMap::new();
+    for file in fs::read_dir("rsc/img").unwrap() {
+        let path = file.unwrap().path();
+        let name = path.file_name().unwrap().to_str().unwrap();
+        let name:String = name[0..name.len()-4].to_string();//remove .bmp
+        println!("{}",name);
+        let path = path.to_str().unwrap().to_string();
+        let surface = Surface::load_bmp(path.clone()).map_err(|e| e.to_string())?;
+        img.entry(name.clone()).or_insert(
+            Texture::from_surface(&surface, &texture_creator).unwrap()
+    );
+ 
+        println!("{}", &path);
+    }
+    
     //data
     let mut sky:Sky = Sky{stars:Vec::new()};
-    let mut player:Player = Player{x:1,y:1,speed:10,texture:prism_fighter};
+    let mut player:Player = Player{x:1,y:1,speed:10,texture:&img["Ship"]};
     //debuging:   
     'running: loop {
         for event in event_pump.poll_iter() {

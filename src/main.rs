@@ -34,7 +34,7 @@ fn main() -> Result<(), String> /*Error Handling*/{
     let sdl_context = sdl2::init()?;
     let video_subsystem = sdl_context.video()?;
     let window = video_subsystem
-        .window("rusty starfeld paralax", SCREEN_SIZE, SCREEN_SIZE)
+        .window("rusty SpaceGame", SCREEN_SIZE, SCREEN_SIZE)
         .position_centered()
         .opengl()
         .build()
@@ -64,8 +64,17 @@ fn main() -> Result<(), String> /*Error Handling*/{
     
     //data
     let mut sky:Sky = Sky{stars:Vec::new()};
-    let mut player:Player = Player{x:1,y:1,speed:10,texture:&img["Ship"]};
-    let mut shot:Shot = Shot{x:1,y:1,speed:10,texture:&img["Shot"]};
+    let mut player:Player = Player{
+        x:400,
+        y:400,
+        speed:10,
+        texture:&img["Ship"],
+        gun:Gun{
+            shots:Vec::new(),
+            texture:&img["Shot"],
+            last_time_shot:0u8
+        },
+    };
     //debuging:   
     'running: loop {
         for event in event_pump.poll_iter() {
@@ -85,8 +94,9 @@ fn main() -> Result<(), String> /*Error Handling*/{
         canvas.set_draw_color(Color::RGB(0,0,0));
         canvas.clear();
 
-        sky.draw(&mut canvas).map_err(|e| e.to_string())?;
-        player.draw(&mut canvas).map_err(|e| e.to_string())?;
+        sky.draw(&mut canvas).unwrap();
+        player.draw(&mut canvas).unwrap();
+
         canvas.present();
         std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 30));
         //procces stars

@@ -33,7 +33,7 @@ impl Sky{
 
     pub fn update(&mut self){
         for star in self.stars.iter_mut(){
-            star.y += (SPEED*star.size) as i32;
+            star.y += (STARS_SPEED*star.size) as i32;
 
         }
         //remove star witout the screen

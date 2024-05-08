@@ -10,6 +10,7 @@ use sdl2::keyboard::Keycode;
 use sdl2::pixels::Color;
 use sdl2::surface::Surface;
 use sdl2::render::Texture;
+use sdl2::rect::Rect;
 use std::collections::HashMap;
 use std::fs;
 use std::time::Duration;
@@ -74,16 +75,15 @@ fn main() -> Result<(), String> /*Error Handling*/{
         gun:Gun{
             shots:Vec::new(),
             texture:&img["Shot"],
-            last_time_shot:0u8
+            last_time_shot:0
         },
     };
     let mut enemy:Enemy = Enemy{
-        x:400,
-        y:100,
+        rect: Rect::new(400,100,ENEMY_W,ENEMY_H),
         speed:7,
         lives:1,
         texture:&img["Enemy"],
-        motion_counter:0
+        motion_counter:0,
     };
     //debuging:   
     'running: loop {
@@ -113,7 +113,7 @@ fn main() -> Result<(), String> /*Error Handling*/{
         //procces stars
         sky.update();
         player.update(&event_pump);
-        enemy.update();
+        enemy.update(&mut player.gun.shots);
     }
     
     Ok(())

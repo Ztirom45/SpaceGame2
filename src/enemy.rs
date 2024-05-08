@@ -6,12 +6,12 @@ contact: https://github.com/Ztirom45
 use sdl2::rect::Rect;
 use sdl2::render::Texture;
 use crate::config::*;
+use crate::gun::*;
 
 pub struct Enemy<'a>{
-    pub x:i32,
-    pub y:i32,
+    pub rect:Rect,
     pub speed:i32,
-    pub lives:u8,
+    pub lives:i8,
     pub texture:&'a Texture<'a>,
     pub motion_counter:u8,
 }
@@ -20,16 +20,22 @@ impl Enemy<'_>{
         canvas.copy(
             &self.texture,
             None,
-            Rect::new(self.x,self.y,ENEMY_W,ENEMY_H)
+            self.rect,
         ).map_err(|e| e.to_string())?;
         Ok(())
     }
-    pub fn update(&mut self){
+    pub fn update(&mut self,shots_referece:&mut Vec<Shot>){
+        /*
         if self.motion_counter < 10{
-            self.x -= self.speed;
+            self.rect.x -= self.speed;
         }else if self.motion_counter > 15 && self.motion_counter < 25{
-            self.x += self.speed;
-        }
+            self.rect.x += self.speed;
+        }*/
+
+        let shots_len = shots_referece.len();
+        shots_referece.retain(|i| self.rect.contains_rect(i.rect)==false);
+        println!("{}",shots_referece.len()-shots_len);
+        self.lives += (shots_referece.len()-shots_len) as i8;
         self.motion_counter += 1;
         if self.motion_counter > 30{
             self.motion_counter = 0;

@@ -32,10 +32,7 @@ impl Sky{
     }
 
     pub fn update(&mut self){
-        for star in self.stars.iter_mut(){
-            star.y += (STARS_SPEED*star.size) as i32;
-
-        }
+        self.stars.iter_mut().for_each(|star| star.y += (STARS_SPEED*star.size) as i32);
         //remove star witout the screen
         self.stars.retain(|i| (i.y as u32) < SCREEN_SIZE);
         self.stars.push(Star{x:rand::thread_rng().gen_range(0..(SCREEN_SIZE as i32)-(MAX_STAR_SIZE as i32)),

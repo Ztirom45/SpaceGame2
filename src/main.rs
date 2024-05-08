@@ -78,12 +78,15 @@ fn main() -> Result<(), String> /*Error Handling*/{
             last_time_shot:0
         },
     };
-    let mut enemy:Enemy = Enemy{
-        rect: Rect::new(400,100,ENEMY_W,ENEMY_H),
-        speed:7,
-        lives:1,
-        texture:&img["Enemy"],
-        motion_counter:0,
+    
+    let mut formation:Formation = Formation{ 
+        enemys:vec![Enemy{
+            rect: Rect::new(400,100,ENEMY_W,ENEMY_H),
+            speed:7,
+            lives:10,
+            texture:&img["Enemy"],
+            motion_counter:0,
+        }],
     };
     //debuging:   
     'running: loop {
@@ -106,14 +109,14 @@ fn main() -> Result<(), String> /*Error Handling*/{
 
         sky.draw(&mut canvas).unwrap();
         player.draw(&mut canvas).unwrap();
-        enemy.draw(&mut canvas).unwrap();
+        formation.draw(&mut canvas).unwrap();
 
         canvas.present();
         std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 30));
         //procces stars
         sky.update();
         player.update(&event_pump);
-        enemy.update(&mut player.gun.shots);
+        formation.update(&mut player.gun.shots);
     }
     
     Ok(())

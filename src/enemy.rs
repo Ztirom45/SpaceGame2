@@ -22,6 +22,7 @@ impl Enemy<'_>{
             None,
             self.rect,
         ).map_err(|e| e.to_string())?;
+        println!("{}",self.lives);
         Ok(())
     }
     pub fn update(&mut self,shots_referece:&mut Vec<Shot>){
@@ -34,8 +35,7 @@ impl Enemy<'_>{
 
         let shots_len = shots_referece.len();
         shots_referece.retain(|i| self.rect.contains_rect(i.rect)==false);
-        println!("{}",shots_referece.len()-shots_len);
-        self.lives += (shots_referece.len()-shots_len) as i8;
+        self.lives -= (shots_len-shots_referece.len()) as i8;
         self.motion_counter += 1;
         if self.motion_counter > 30{
             self.motion_counter = 0;
@@ -43,11 +43,9 @@ impl Enemy<'_>{
     }
 }
 
-/*
+
 pub struct Formation<'a>{
     pub enemys:Vec<Enemy<'a>>,
-    pub texture:&'a Texture<'a>,
-    pub last_time_enemy:u8,
 }
 
 impl Formation<'_>{
@@ -58,27 +56,12 @@ impl Formation<'_>{
         Ok(())
     }
 
-    pub fn update(&mut self){
-        for enemy in self.enemys.iter_mut(){
-            enemy.update();
-        }
+    pub fn update(&mut self,shots: &mut Vec<Shot>){
+        self.enemys.iter_mut().for_each(
+            |enemy| enemy.update(shots)
+        );
         //remove star witout the screen
-        self.enemys.retain(|i| (i.y as u32) < SCREEN_SIZE);
-        self.last_time_enemy += 1;
-    }
-
-    pub fn enemy(&mut self, x:i32,y:i32){
-        if self.last_time_enemy > enemy_SPAWN_DELAY{
-            self.enemys.push(Enemy{x:x+enemy_SPWAN_OFFSET,y,speed:enemy_START_SPEED,texture:self.texture});
-            self.enemys.push(Enemy{
-                x,
-                y,
-                speed:enemy_START_SPEED,
-                texture:self.texture,
-            });
-            self.last_time_enemy = 0;
-        }   
+        self.enemys.retain(|i| (i.lives) > 0);
     }
    
 }
-*/

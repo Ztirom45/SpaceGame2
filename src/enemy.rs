@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 /*
 Code written by Ztirom45
 LICENSE: GPL4
@@ -49,7 +51,16 @@ pub struct Formation<'a>{
 }
 
 impl Formation<'_>{
-     pub fn draw(&self, canvas: &mut sdl2::render::Canvas<sdl2::video::Window>) -> Result<(), String>{
+    pub fn init(&mut self,img:&mut HashMap<String, Enemy>){
+        self.enemys.push(Enemy{
+            rect: Rect::new(400,100,ENEMY_W,ENEMY_H),
+            speed:7,
+            lives:10,
+            texture:&img["Enemy"],
+            motion_counter:0,
+        });
+    } 
+    pub fn draw(&self, canvas: &mut sdl2::render::Canvas<sdl2::video::Window>) -> Result<(), String>{
         for enemy in self.enemys.iter(){
             enemy.draw(canvas).map_err(|e| e.to_string())?;
         }

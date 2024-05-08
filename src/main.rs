@@ -80,14 +80,9 @@ fn main() -> Result<(), String> /*Error Handling*/{
     };
     
     let mut formation:Formation = Formation{ 
-        enemys:vec![Enemy{
-            rect: Rect::new(400,100,ENEMY_W,ENEMY_H),
-            speed:7,
-            lives:10,
-            texture:&img["Enemy"],
-            motion_counter:0,
-        }],
+        enemys:Vec::new(),
     };
+    formation.init(&img);
     //debuging:   
     'running: loop {
         for event in event_pump.poll_iter() {

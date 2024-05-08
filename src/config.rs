@@ -8,7 +8,6 @@ pub const SCREEN_SIZE:u32 = 800;
 pub const MIN_STAR_SIZE:f32 = 2.0;
 pub const MAX_STAR_SIZE:f32 = 6.0;
 
-
 //stars
 pub const STARS_SPEED:f32     = 2.5;
 //player

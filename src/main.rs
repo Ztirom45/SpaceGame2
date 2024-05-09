@@ -80,10 +80,12 @@ fn main() -> Result<(), String> /*Error Handling*/{
         lives:PLAYER_LIVES,
 
     };
-    
     let mut formation:Formation = Formation{ 
         enemys:Vec::new(),
-        texture:&img["Enemy"],
+        textures:vec![
+            &img["Enemy"],
+            &img["Enemy_hit"],
+        ],
     };
     let mut enemy_shots = EnemyShots{
         shots:Vec::new(),

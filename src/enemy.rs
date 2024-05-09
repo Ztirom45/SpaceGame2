@@ -14,11 +14,12 @@ pub struct Enemy<'a>{
     pub speed:i32,
     pub lives:i8,
     pub texture:&'a Texture<'a>,
-    pub texure_hit:&'a Texture<'a>,
+    pub texture_hit:&'a Texture<'a>,
     pub enemy_path:EnemyPath,
     pub motion_counter:u16,
     pub actions:usize,
     pub last_time_shot:u8,
+    pub last_time_hit:u8,
 }
 impl Enemy<'_>{
     pub fn draw(&self, canvas: &mut sdl2::render::Canvas<sdl2::video::Window>) -> Result<(), String>{
@@ -50,7 +51,15 @@ impl Enemy<'_>{
         //colision with player shots and dying
         let shots_len = player_shots.len();
         player_shots.retain(|i| self.rect.contains_rect(i.rect)==false);
-        self.lives -= (shots_len-player_shots.len()) as i8;
+        let damage = (shots_len-player_shots.len()) as i8;
+        if damage > 0{
+            self.lives -= damage;
+            self.last_time_hit = 0
+        }else{
+            if  self.last_time_hit <= HIT_SHOW_DELAY{
+                self.last_time_hit+=1
+            }
+        }
         self.motion_counter += 1;
         if self.motion_counter > self.enemy_path.data[self.actions].time{
             self.motion_counter = 0;
@@ -66,7 +75,7 @@ impl Enemy<'_>{
 
 pub struct Formation<'a>{
     pub enemys:Vec<Enemy<'a>>,
-    pub texture:&'a Texture<'a>,
+    pub textures:Vec<&'a Texture<'a>>,
 }
 
 impl Formation<'_>{
@@ -76,12 +85,13 @@ impl Formation<'_>{
                 rect: Rect::new(i*50+150,100,ENEMY_W,ENEMY_H),
                 speed:2,
                 lives:10,
-                texture:self.texture,
-                texture:self.texture,
+                texture:self.textures[0],
+                texture_hit:self.textures[1],
                 enemy_path:EnemyPath{data:Vec::new()},
                 motion_counter:0,
                 actions:0,
                 last_time_shot:0,
+                last_time_hit:0,
             });
             self.enemys[i as usize].enemy_path.make_std();
 

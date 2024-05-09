@@ -71,6 +71,7 @@ fn main() -> Result<(), String> /*Error Handling*/{
     }
     //audio
 
+    let mut sl = Soloud::default().unwrap();
     let mut sound:HashMap<String, audio::Wav> = HashMap::new();
     for file in fs::read_dir("rsc/sound").unwrap() { 
         let path = file.unwrap().path();
@@ -96,6 +97,7 @@ fn main() -> Result<(), String> /*Error Handling*/{
             shots:Vec::new(),
             texture:&img["Shot"],
             last_time_shot:0,
+            sound:&sound["laser"],
         },
         lives:PLAYER_LIVES,
 
@@ -147,7 +149,7 @@ fn main() -> Result<(), String> /*Error Handling*/{
         std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 30));
         //procces stars
         sky.update();
-        player.update(&event_pump,&mut enemy_shots.shots);
+        player.update(&event_pump,&mut enemy_shots.shots,&mut sl);
         enemy_shots.update();
         formation.update(&mut player.gun.shots,&mut enemy_shots,&mut rng);
     }

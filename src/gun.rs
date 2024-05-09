@@ -5,6 +5,7 @@ contact: https://github.com/Ztirom45
 */
 use sdl2::rect::Rect;
 use sdl2::render::Texture;
+use soloud::Soloud;
 use soloud::audio;
 use crate::config::*;
 use crate::paths::*;
@@ -39,7 +40,7 @@ pub struct Gun<'a>{
     pub shots:Vec<Shot<'a>>,
     pub texture:&'a Texture<'a>,
     pub last_time_shot:u8,
-    pub sound:audio::Wav,
+    pub sound:&'a audio::Wav,
 }
 
 impl Gun<'_>{
@@ -59,8 +60,9 @@ impl Gun<'_>{
         }
     }
 
-    pub fn shot(&mut self, x:i32,y:i32){
+    pub fn shot(&mut self, x:i32,y:i32,sl:&mut Soloud){
         if self.last_time_shot > SHOT_SPAWN_DELAY{
+            sl.play(self.sound);
             self.shots.push(Shot{
                 rect:Rect::new(x+SHOT_SPWAN_OFFSET,y,SHOT_W,SHOT_H),
                 speed:SHOT_START_SPEED,

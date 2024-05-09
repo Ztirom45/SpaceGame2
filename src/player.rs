@@ -6,6 +6,8 @@ contact: https://github.com/Ztirom45
 
 use std::vec;
 
+
+use soloud::Soloud;
 use sdl2::keyboard::Scancode;
 use sdl2::pixels::Color;
 use sdl2::rect::Rect;
@@ -37,7 +39,7 @@ impl Player<'_>{
 
         Ok(())
     }
-    pub fn update(&mut self,e: &sdl2::EventPump,enemy_shots:&mut Vec<Shot>){
+    pub fn update(&mut self,e: &sdl2::EventPump,enemy_shots:&mut Vec<Shot>,sl:&mut Soloud){
         if e.keyboard_state().is_scancode_pressed(Scancode::A){
             self.rect.x -= self.speed;
         }
@@ -51,10 +53,11 @@ impl Player<'_>{
             self.rect.y += self.speed;
         }
         if e.keyboard_state().is_scancode_pressed(Scancode::Space){
-            self.gun.shot(self.rect.x+SHOT_SPWAN_OFFSET,self.rect.y);
+            self.gun.shot(self.rect.x+SHOT_SPWAN_OFFSET,self.rect.y,sl);
             self.gun.shot(
                 self.rect.x+(PLAYER_W as i32)-(SHOT_W as i32)-SHOT_SPWAN_OFFSET,
-                self.rect.y
+                self.rect.y,
+                sl
             );
         }            
         self.gun.update(); 

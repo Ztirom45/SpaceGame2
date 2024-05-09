@@ -1,2 +1,2 @@
-#git pull
+git pull
 ./target/debug/game.rs

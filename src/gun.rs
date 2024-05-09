@@ -5,8 +5,10 @@ contact: https://github.com/Ztirom45
 */
 use sdl2::rect::Rect;
 use sdl2::render::Texture;
+use soloud::audio;
 use crate::config::*;
 use crate::paths::*;
+
 
 pub struct Shot<'a>{ 
     pub rect:Rect,
@@ -37,6 +39,7 @@ pub struct Gun<'a>{
     pub shots:Vec<Shot<'a>>,
     pub texture:&'a Texture<'a>,
     pub last_time_shot:u8,
+    pub sound:audio::Wav,
 }
 
 impl Gun<'_>{

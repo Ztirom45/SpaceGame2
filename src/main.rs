@@ -84,7 +84,7 @@ fn main() -> Result<(), String> /*Error Handling*/{
 
 
     } 
-    sl.play(&sound["laser"]);
+    //random
     let mut rng = rand::thread_rng();
     //data
     let mut sky:Sky = Sky{stars:Vec::new()};

@@ -8,6 +8,9 @@ use sdl2::rect::Rect;
 use sdl2::render::Texture;
 use rand::thread_rng;
 use rand::rngs::ThreadRng;
+use soloud::Soloud;
+use soloud::Wav;
+use soloud::audio;
 use crate::config::*;
 use crate::paths::*;
 use crate::gun::*;
@@ -88,6 +91,7 @@ impl Enemy<'_>{
 pub struct Formation<'a>{
     pub enemys:Vec<Enemy<'a>>,
     pub textures:Vec<&'a Texture<'a>>,
+    pub sounds:Vec<&'a audio::Wav>,
 }
 
 impl Formation<'_>{
@@ -116,12 +120,16 @@ impl Formation<'_>{
         Ok(())
     }
 
-    pub fn update(&mut self,shots: &mut Vec<Shot>,own_shots: &mut EnemyShots,rng: &mut ThreadRng){
+    pub fn update(&mut self,shots: &mut Vec<Shot>,own_shots: &mut EnemyShots,rng: &mut ThreadRng,sl:&mut Soloud){
         self.enemys.iter_mut().for_each(
             |enemy| enemy.update(shots,own_shots,rng)
         );
-        //remove star witout the screen
+        //remove enemys witout the screen
+        let enemys_len_befor = self.enemys.len();
         self.enemys.retain(|i| (i.lives) > 0);
+        if enemys_len_befor>self.enemys.len(){
+            sl.play(self.sounds[0]);
+        }
     }
    
 }

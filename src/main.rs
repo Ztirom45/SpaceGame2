@@ -108,6 +108,9 @@ fn main() -> Result<(), String> /*Error Handling*/{
             &img["Enemy"],
             &img["Enemy_hit"],
         ],
+        sounds:vec![
+            &sound["explosion"],
+        ],
     };
     let mut enemy_shots = EnemyShots{
         shots:Vec::new(),
@@ -151,7 +154,7 @@ fn main() -> Result<(), String> /*Error Handling*/{
         sky.update();
         player.update(&event_pump,&mut enemy_shots.shots,&mut sl);
         enemy_shots.update();
-        formation.update(&mut player.gun.shots,&mut enemy_shots,&mut rng);
+        formation.update(&mut player.gun.shots,&mut enemy_shots,&mut rng,&mut sl);
     }
     
     Ok(())

@@ -23,11 +23,20 @@ pub struct Enemy<'a>{
 }
 impl Enemy<'_>{
     pub fn draw(&self, canvas: &mut sdl2::render::Canvas<sdl2::video::Window>) -> Result<(), String>{
-        canvas.copy(
-            &self.texture,
-            None,
-            self.rect,
-        ).map_err(|e| e.to_string())?;
+        
+        if self.last_time_hit <= HIT_SHOW_DELAY{
+            canvas.copy(
+                &self.texture_hit,
+                None,
+                self.rect,
+            ).map_err(|e| e.to_string())?;
+        }else{
+            canvas.copy(
+                &self.texture,
+                None,
+                self.rect,
+            ).map_err(|e| e.to_string())?;
+        }
         Ok(())
     }
     pub fn update(&mut self,player_shots:&mut Vec<Shot>,own_shots:&mut EnemyShots){
@@ -56,7 +65,7 @@ impl Enemy<'_>{
             self.lives -= damage;
             self.last_time_hit = 0
         }else{
-            if  self.last_time_hit <= HIT_SHOW_DELAY{
+            if self.last_time_hit <= HIT_SHOW_DELAY{
                 self.last_time_hit+=1
             }
         }

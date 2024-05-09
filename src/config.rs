@@ -11,8 +11,9 @@ pub const MAX_STAR_SIZE:f32 = 6.0;
 //stars
 pub const STARS_SPEED:f32     = 2.5;
 //player
-pub const PLAYER_W:u32  = 52;
-pub const PLAYER_H:u32  = 56;
+pub const PLAYER_W:u32   = 52;
+pub const PLAYER_H:u32   = 56;
+pub const PLAYER_LIVES:i8 = 10;
 
 //gun
 pub const SHOT_W:u32 = 3;

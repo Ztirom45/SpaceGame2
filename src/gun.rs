@@ -51,7 +51,7 @@ impl Gun<'_>{
         self.shots.iter_mut().for_each(|shot| shot.update());
         //remove star witout the screen
         self.shots.retain(|i| (i.rect.y as u32) < SCREEN_SIZE);
-        if self.last_time_shot <= 10{
+        if self.last_time_shot <= SHOT_SPAWN_DELAY{
             self.last_time_shot += 1;
         }
     }

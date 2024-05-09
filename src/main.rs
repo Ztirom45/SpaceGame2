@@ -69,15 +69,16 @@ fn main() -> Result<(), String> /*Error Handling*/{
     //data
     let mut sky:Sky = Sky{stars:Vec::new()};
     let mut player:Player = Player{
-        x:400,
-        y:400,
+        rect:Rect::new(400,400,PLAYER_W,PLAYER_H),
         speed:10,
         texture:&img["Ship"],
         gun:Gun{
             shots:Vec::new(),
             texture:&img["Shot"],
-            last_time_shot:0
+            last_time_shot:0,
         },
+        lives:PLAYER_LIVES,
+
     };
     
     let mut formation:Formation = Formation{ 
@@ -92,6 +93,14 @@ fn main() -> Result<(), String> /*Error Handling*/{
     formation.init();
     //debuging:   
     'running: loop {
+        if player.lives<=0{
+            println!("Lose");
+            break 'running;
+        }
+        if formation.enemys.len() <= 0{
+            println!("Win");
+            break 'running;
+        }
         for event in event_pump.poll_iter() {
             match event {
                 Event::Quit { .. }
@@ -99,11 +108,9 @@ fn main() -> Result<(), String> /*Error Handling*/{
                     keycode: Some(Keycode::Escape),
                     ..
                 } => break 'running,
-                Event::KeyDown { keycode: Some(Keycode::Left), repeat: false, .. } => {
-                    player.x -= 1;
-                },
                 _ => {}
             }
+
         }
 
         canvas.set_draw_color(Color::RGB(0,0,0));
@@ -118,7 +125,7 @@ fn main() -> Result<(), String> /*Error Handling*/{
         std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 30));
         //procces stars
         sky.update();
-        player.update(&event_pump);
+        player.update(&event_pump,&mut enemy_shots.shots);
         enemy_shots.update();
         formation.update(&mut player.gun.shots,&mut enemy_shots);
     }

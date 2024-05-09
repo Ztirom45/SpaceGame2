@@ -1,2 +1,2 @@
 git pull
-./target/debug/game.rs
+cargo run

@@ -7,6 +7,7 @@ contact: https://github.com/Ztirom45
 use std::vec;
 
 use sdl2::keyboard::Scancode;
+use sdl2::pixels::Color;
 use sdl2::rect::Rect;
 use sdl2::render::Texture;
 
@@ -28,6 +29,12 @@ impl Player<'_>{
             self.rect
         ).map_err(|e| e.to_string())?;
         self.gun.draw(canvas).map_err(|e| e.to_string())?;
+        //draw lives: TODO: pretier
+        canvas.set_draw_color(Color::RGB(100, 100, 100));
+        canvas.fill_rect(Rect::new(650,10, 100, 10)).map_err(|e| e.to_string())?; 
+        canvas.set_draw_color(Color::RGB(255, 0, 0));
+        canvas.fill_rect(Rect::new(650,10, (self.lives*(100/PLAYER_LIVES))as u32, 10)).map_err(|e| e.to_string())?;
+
         Ok(())
     }
     pub fn update(&mut self,e: &sdl2::EventPump,enemy_shots:&mut Vec<Shot>){

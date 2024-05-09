@@ -1,3 +1,4 @@
+use rand::Rng;
 /*
 Code written by Ztirom45
 LICENSE: GPL4
@@ -5,6 +6,8 @@ contact: https://github.com/Ztirom45
 */
 use sdl2::rect::Rect;
 use sdl2::render::Texture;
+use rand::thread_rng;
+use rand::rngs::ThreadRng;
 use crate::config::*;
 use crate::paths::*;
 use crate::gun::*;
@@ -39,7 +42,7 @@ impl Enemy<'_>{
         }
         Ok(())
     }
-    pub fn update(&mut self,player_shots:&mut Vec<Shot>,own_shots:&mut EnemyShots){
+    pub fn update(&mut self,player_shots:&mut Vec<Shot>,own_shots:&mut EnemyShots,rng:&mut ThreadRng){
         //move
         match self.enemy_path.data[self.actions].direction{
                Direction::Up=>self.rect.y -= self.speed,
@@ -49,7 +52,7 @@ impl Enemy<'_>{
         }
         //shot
 
-        if self.last_time_shot > SHOT_SPAWN_DELAY_ENEMY{
+        if (self.last_time_shot > SHOT_SPAWN_DELAY_ENEMY) && (rng.gen_range(0..20) == 0){
             own_shots.shot(self.rect.x,self.rect.y);
             self.last_time_shot = 0;
         }
@@ -93,7 +96,7 @@ impl Formation<'_>{
             self.enemys.push(Enemy{
                 rect: Rect::new(i*50+150,100,ENEMY_W,ENEMY_H),
                 speed:2,
-                lives:10,
+                lives:3,
                 texture:self.textures[0],
                 texture_hit:self.textures[1],
                 enemy_path:EnemyPath{data:Vec::new()},
@@ -113,9 +116,9 @@ impl Formation<'_>{
         Ok(())
     }
 
-    pub fn update(&mut self,shots: &mut Vec<Shot>,own_shots: &mut EnemyShots){
+    pub fn update(&mut self,shots: &mut Vec<Shot>,own_shots: &mut EnemyShots,rng: &mut ThreadRng){
         self.enemys.iter_mut().for_each(
-            |enemy| enemy.update(shots,own_shots)
+            |enemy| enemy.update(shots,own_shots,rng)
         );
         //remove star witout the screen
         self.enemys.retain(|i| (i.lives) > 0);

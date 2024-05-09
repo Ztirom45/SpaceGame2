@@ -65,7 +65,8 @@ fn main() -> Result<(), String> /*Error Handling*/{
             Texture::from_surface(&surface, &texture_creator).unwrap()
         );
     }
-    
+
+    let mut rng = rand::thread_rng();
     //data
     let mut sky:Sky = Sky{stars:Vec::new()};
     let mut player:Player = Player{
@@ -129,7 +130,7 @@ fn main() -> Result<(), String> /*Error Handling*/{
         sky.update();
         player.update(&event_pump,&mut enemy_shots.shots);
         enemy_shots.update();
-        formation.update(&mut player.gun.shots,&mut enemy_shots);
+        formation.update(&mut player.gun.shots,&mut enemy_shots,&mut rng);
     }
     
     Ok(())

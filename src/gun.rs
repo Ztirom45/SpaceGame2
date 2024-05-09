@@ -6,11 +6,13 @@ contact: https://github.com/Ztirom45
 use sdl2::rect::Rect;
 use sdl2::render::Texture;
 use crate::config::*;
+use crate::paths::*;
 
 pub struct Shot<'a>{ 
     pub rect:Rect,
     pub speed:i32,
     pub texture:&'a Texture<'a>,
+    pub direction:Direction,
 }
 impl Shot<'_>{
     pub fn draw(&self, canvas: &mut sdl2::render::Canvas<sdl2::video::Window>) -> Result<(), String>{
@@ -22,7 +24,12 @@ impl Shot<'_>{
         Ok(())
     }
     pub fn update(&mut self){
-        self.rect.y -= self.speed;
+        match self.direction{
+               Direction::Up=>self.rect.y -= self.speed,
+               Direction::Down=>self.rect.y += self.speed,
+               Direction::Right=>self.rect.x += self.speed,
+               Direction::Left=>self.rect.x -= self.speed,
+        }
     }
 }
 
@@ -53,14 +60,55 @@ impl Gun<'_>{
         if self.last_time_shot > SHOT_SPAWN_DELAY{
             self.shots.push(Shot{
                 rect:Rect::new(x+SHOT_SPWAN_OFFSET,y,SHOT_W,SHOT_H),
-                speed:SHOT_START_SPEED,texture:self.texture});
+                speed:SHOT_START_SPEED,
+                texture:self.texture,
+                direction:Direction::Up,
+            });
             self.shots.push(Shot{
                 rect:Rect::new(x,y,SHOT_W,SHOT_H,),
                 speed:SHOT_START_SPEED,
                 texture:self.texture,
+                direction:Direction::Up,
             });
             self.last_time_shot = 0;
         }   
+    }
+   
+}
+
+pub struct EnemyShots<'a>{
+    pub shots:Vec<Shot<'a>>,
+    pub texture:&'a Texture<'a>,
+
+}
+
+impl EnemyShots<'_>{
+     pub fn draw(&self, canvas: &mut sdl2::render::Canvas<sdl2::video::Window>) -> Result<(), String>{
+        for shot in self.shots.iter(){
+            shot.draw(canvas).map_err(|e| e.to_string())?;
+        }
+        Ok(())
+    }
+
+    pub fn update(&mut self){
+        self.shots.iter_mut().for_each(|shot| shot.update());
+        //remove star witout the screen
+        self.shots.retain(|i| (i.rect.y as u32) < SCREEN_SIZE);
+    }
+
+    pub fn shot(&mut self, x:i32,y:i32){
+            self.shots.push(Shot{
+                rect:Rect::new(x+SHOT_SPWAN_OFFSET,y,SHOT_W,SHOT_H),
+                speed:SHOT_START_SPEED,
+                texture:self.texture,
+                direction:Direction::Down,
+            });
+            self.shots.push(Shot{
+                rect:Rect::new(x,y,SHOT_W,SHOT_H,),
+                speed:SHOT_START_SPEED,
+                texture:self.texture,
+                direction:Direction::Down,
+            }); 
     }
    
 }

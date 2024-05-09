@@ -19,6 +19,7 @@ mod sky;
 mod config;
 mod player;
 mod gun;
+mod paths;
 mod enemy;
 use crate::config::*;
 use crate::sky::*;
@@ -83,6 +84,11 @@ fn main() -> Result<(), String> /*Error Handling*/{
         enemys:Vec::new(),
         texture:&img["Enemy"],
     };
+    let mut enemy_shots = EnemyShots{
+        shots:Vec::new(),
+        texture:&img["Shot"],
+    };
+
     formation.init();
     //debuging:   
     'running: loop {
@@ -106,13 +112,15 @@ fn main() -> Result<(), String> /*Error Handling*/{
         sky.draw(&mut canvas).unwrap();
         player.draw(&mut canvas).unwrap();
         formation.draw(&mut canvas).unwrap();
+        enemy_shots.draw(&mut canvas).unwrap();
 
         canvas.present();
         std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 30));
         //procces stars
         sky.update();
         player.update(&event_pump);
-        formation.update(&mut player.gun.shots);
+        enemy_shots.update();
+        formation.update(&mut player.gun.shots,&mut enemy_shots);
     }
     
     Ok(())

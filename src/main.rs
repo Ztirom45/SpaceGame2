@@ -13,7 +13,10 @@ use sdl2::render::Texture;
 use sdl2::rect::Rect;
 use std::collections::HashMap;
 use std::fs;
+use std::thread::sleep_ms;
 use std::time::Duration;
+use soloud::*;
+
 
 mod sky;
 mod config;
@@ -32,6 +35,7 @@ use crate::enemy::*;
 fn print_type_of<T>(_: &T) {
     println!("{}", std::any::type_name::<T>())
 }*/
+
 
 fn main() -> Result<(), String> /*Error Handling*/{
     //inititlizing SDL
@@ -65,7 +69,22 @@ fn main() -> Result<(), String> /*Error Handling*/{
             Texture::from_surface(&surface, &texture_creator).unwrap()
         );
     }
+    //audio
 
+    let mut sound:HashMap<String, audio::Wav> = HashMap::new();
+    for file in fs::read_dir("rsc/sound").unwrap() { 
+        let path = file.unwrap().path();
+        let name = path.file_name().unwrap().to_str().unwrap();
+        let name:String = name[0..name.len()-4].to_string();//remove .bmp
+        let path = path.to_str().unwrap().to_string();
+       
+        sound.entry(name.clone()).or_insert(
+            audio::Wav::from_path(path).unwrap()
+        );
+
+
+    } 
+    sl.play(&sound["laser"]);
     let mut rng = rand::thread_rng();
     //data
     let mut sky:Sky = Sky{stars:Vec::new()};

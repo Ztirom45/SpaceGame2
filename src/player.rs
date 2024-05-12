@@ -3,15 +3,12 @@ Code written by Ztirom45
 LICENSE: GPL4
 contact: https://github.com/Ztirom45
 */
-
-use std::vec;
-
-
 use soloud::Soloud;
 use sdl2::keyboard::Scancode;
 use sdl2::pixels::Color;
 use sdl2::rect::Rect;
 use sdl2::render::Texture;
+use soloud::audio;
 
 use crate::config::*;
 use crate::gun::*;
@@ -22,6 +19,7 @@ pub struct Player<'a>{
     pub texture:&'a Texture<'a>,
     pub gun:Gun<'a>,
     pub lives:i8,
+    pub sound_hit:&'a audio::Wav,
 }
 impl Player<'_>{
     pub fn draw(&self, canvas: &mut sdl2::render::Canvas<sdl2::video::Window>) -> Result<(), String>{
@@ -62,10 +60,14 @@ impl Player<'_>{
         }            
         self.gun.update(); 
 
-    //cheak for damage
-    let shots_len = enemy_shots.len();
-    enemy_shots.retain(|i| self.rect.contains_rect(i.rect)==false);
-    self.lives -= (shots_len-enemy_shots.len()) as i8;
+        //cheak for damage
+        let shots_len = enemy_shots.len();
+        enemy_shots.retain(|i| self.rect.contains_rect(i.rect)==false);
+        let damage:i8 = (shots_len-enemy_shots.len()) as i8;
+        if damage != 0{
+            self.lives -= damage;
+            sl.play(self.sound_hit);
+        }
     }
 }
 

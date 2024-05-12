@@ -13,7 +13,6 @@ use sdl2::render::Texture;
 use sdl2::rect::Rect;
 use std::collections::HashMap;
 use std::fs;
-use std::thread::sleep_ms;
 use std::time::Duration;
 use soloud::*;
 
@@ -100,21 +99,19 @@ fn main() -> Result<(), String> /*Error Handling*/{
             sound:&sound["laser"],
         },
         lives:PLAYER_LIVES,
+        sound_hit:&sound["hit"],
 
     };
     let mut formation:Formation = Formation{ 
         enemys:Vec::new(),
-        textures:vec![
-            &img["Enemy"],
-            &img["Enemy_hit"],
-        ],
-        sounds:vec![
-            &sound["explosion"],
-        ],
+        texture_enemy: &img["Enemy"],
+        texture_enemy_hit: &img["Enemy_hit"],
+        sound_enemy_die:&sound["explosion"],
     };
     let mut enemy_shots = EnemyShots{
         shots:Vec::new(),
         texture:&img["Shot"],
+        sound_shot:&sound["laser2"],
     };
 
     formation.init();

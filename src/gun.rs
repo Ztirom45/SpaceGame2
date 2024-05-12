@@ -84,6 +84,7 @@ impl Gun<'_>{
 pub struct EnemyShots<'a>{
     pub shots:Vec<Shot<'a>>,
     pub texture:&'a Texture<'a>,
+    pub sound_shot:&'a audio::Wav,
 
 }
 
@@ -101,7 +102,8 @@ impl EnemyShots<'_>{
         self.shots.retain(|i| (i.rect.y as u32) < SCREEN_SIZE);
     }
 
-    pub fn shot(&mut self, x:i32,y:i32){
+    pub fn shot(&mut self, x:i32,y:i32,sl:&mut Soloud){ 
+            sl.play(self.sound_shot);
             self.shots.push(Shot{
                 rect:Rect::new(x+SHOT_SPWAN_OFFSET,y,SHOT_W,SHOT_H),
                 speed:SHOT_START_SPEED,

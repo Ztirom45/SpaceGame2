@@ -1,4 +1,3 @@
-use rand::Rng;
 /*
 Code written by Ztirom45
 LICENSE: GPL4
@@ -6,14 +5,12 @@ contact: https://github.com/Ztirom45
 */
 use sdl2::rect::Rect;
 use sdl2::render::Texture;
-use rand::thread_rng;
-use rand::rngs::ThreadRng;
 use soloud::Soloud;
-use soloud::Wav;
 use soloud::audio;
-use crate::config::*;
+use rand::{Rng,rngs::ThreadRng};
 use crate::paths::*;
 use crate::gun::*;
+use crate::config::*;
 
 pub struct Enemy<'a>{
     pub rect:Rect,
@@ -45,7 +42,7 @@ impl Enemy<'_>{
         }
         Ok(())
     }
-    pub fn update(&mut self,player_shots:&mut Vec<Shot>,own_shots:&mut EnemyShots,rng:&mut ThreadRng){
+    pub fn update(&mut self,player_shots:&mut Vec<Shot>,own_shots:&mut EnemyShots,rng:&mut ThreadRng,sl:&mut Soloud){
         //move
         match self.enemy_path.data[self.actions].direction{
                Direction::Up=>self.rect.y -= self.speed,
@@ -56,7 +53,7 @@ impl Enemy<'_>{
         //shot
 
         if (self.last_time_shot > SHOT_SPAWN_DELAY_ENEMY) && (rng.gen_range(0..20) == 0){
-            own_shots.shot(self.rect.x,self.rect.y);
+            own_shots.shot(self.rect.x,self.rect.y,sl);
             self.last_time_shot = 0;
         }
 
@@ -90,8 +87,9 @@ impl Enemy<'_>{
 
 pub struct Formation<'a>{
     pub enemys:Vec<Enemy<'a>>,
-    pub textures:Vec<&'a Texture<'a>>,
-    pub sounds:Vec<&'a audio::Wav>,
+    pub texture_enemy:&'a Texture<'a>,
+    pub texture_enemy_hit:&'a Texture<'a>,
+    pub sound_enemy_die:&'a audio::Wav,
 }
 
 impl Formation<'_>{
@@ -101,8 +99,8 @@ impl Formation<'_>{
                 rect: Rect::new(i*50+150,100,ENEMY_W,ENEMY_H),
                 speed:2,
                 lives:3,
-                texture:self.textures[0],
-                texture_hit:self.textures[1],
+                texture:self.texture_enemy,
+                texture_hit:self.texture_enemy_hit,
                 enemy_path:EnemyPath{data:Vec::new()},
                 motion_counter:0,
                 actions:0,
@@ -122,13 +120,13 @@ impl Formation<'_>{
 
     pub fn update(&mut self,shots: &mut Vec<Shot>,own_shots: &mut EnemyShots,rng: &mut ThreadRng,sl:&mut Soloud){
         self.enemys.iter_mut().for_each(
-            |enemy| enemy.update(shots,own_shots,rng)
+            |enemy| enemy.update(shots,own_shots,rng,sl)
         );
         //remove enemys witout the screen
         let enemys_len_befor = self.enemys.len();
         self.enemys.retain(|i| (i.lives) > 0);
         if enemys_len_befor>self.enemys.len(){
-            sl.play(self.sounds[0]);
+            sl.play(self.sound_enemy_die);
         }
     }
    

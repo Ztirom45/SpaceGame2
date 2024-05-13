@@ -38,16 +38,20 @@ impl Player<'_>{
         Ok(())
     }
     pub fn update(&mut self,e: &sdl2::EventPump,enemy_shots:&mut Vec<Shot>,sl:&mut Soloud){
-        if e.keyboard_state().is_scancode_pressed(Scancode::A){
+        if e.keyboard_state().is_scancode_pressed(Scancode::A)
+        ||e.keyboard_state().is_scancode_pressed(Scancode::H){
             self.rect.x -= self.speed;
         }
-        if e.keyboard_state().is_scancode_pressed(Scancode::D){
+        if e.keyboard_state().is_scancode_pressed(Scancode::D)
+        ||e.keyboard_state().is_scancode_pressed(Scancode::L){
             self.rect.x += self.speed;
         }
-        if e.keyboard_state().is_scancode_pressed(Scancode::W){
+        if e.keyboard_state().is_scancode_pressed(Scancode::W)
+        ||e.keyboard_state().is_scancode_pressed(Scancode::K){
             self.rect.y -= self.speed;
         }
-        if e.keyboard_state().is_scancode_pressed(Scancode::S){
+        if e.keyboard_state().is_scancode_pressed(Scancode::S)
+        ||e.keyboard_state().is_scancode_pressed(Scancode::J){
             self.rect.y += self.speed;
         }
         if e.keyboard_state().is_scancode_pressed(Scancode::Space){

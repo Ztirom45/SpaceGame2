@@ -23,11 +23,13 @@ mod player;
 mod gun;
 mod paths;
 mod enemy;
+mod menu;
 use crate::config::*;
 use crate::sky::*;
 use crate::player::*;
 use crate::gun::*;
 use crate::enemy::*;
+use crate::menu::*;
 
 /*
 //Just for debugug pourposes
@@ -86,7 +88,13 @@ fn main() -> Result<(), String> /*Error Handling*/{
     } 
     //random
     let mut rng = rand::thread_rng();
-    //data
+    //objects
+    let mut menu = Menu{
+        image_buttons:&img["Buttons"],
+        image_mode1:&img["NormalMode"],
+    };
+    let mut menu_active:bool = true;
+
     let mut sky:Sky = Sky{stars:Vec::new()};
     let mut player:Player = Player{
         rect:Rect::new(400,400,PLAYER_W,PLAYER_H),
@@ -135,26 +143,38 @@ fn main() -> Result<(), String> /*Error Handling*/{
                     keycode: Some(Keycode::Escape),
                     ..
                 } => break 'running,
+                Event::KeyDown{
+                    keycode: Some(Keycode::Space),
+                    ..
+                }=> menu_active = false,
                 _ => {}
             }
 
         }
-
         canvas.set_draw_color(Color::RGB(0,0,0));
         canvas.clear();
+        
+        if menu_active{
+            sky.update();
+            sky.draw(&mut canvas).unwrap();
+            menu.main(&mut canvas).unwrap();
+        }else{
+            //procces objects
+            sky.update();
+            player.update(&event_pump,&mut enemy_shots.shots,&mut sl);
+            enemy_shots.update();
+            formations.update(&mut player.gun.shots,&mut enemy_shots,&mut rng,&mut sl);
+            //draw objects
+            sky.draw(&mut canvas).unwrap();
+            player.draw(&mut canvas).unwrap();
+            formations.draw(&mut canvas).unwrap();
+            enemy_shots.draw(&mut canvas).unwrap();
 
-        sky.draw(&mut canvas).unwrap();
-        player.draw(&mut canvas).unwrap();
-        formations.draw(&mut canvas).unwrap();
-        enemy_shots.draw(&mut canvas).unwrap();
+
+        }
 
         canvas.present();
         std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 30));
-        //procces stars
-        sky.update();
-        player.update(&event_pump,&mut enemy_shots.shots,&mut sl);
-        enemy_shots.update();
-        formations.update(&mut player.gun.shots,&mut enemy_shots,&mut rng,&mut sl);
     }
     
     Ok(())

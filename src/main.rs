@@ -128,14 +128,6 @@ fn main() -> Result<(), String> /*Error Handling*/{
     formations.init();
     //debuging:   
     'running: loop {
-        if player.lives<=0{
-            println!("Lose");
-            break 'running;
-        }
-        if formations.formations.len() == formations.formation_number{
-            println!("Win");
-            break 'running;
-        }
         for event in event_pump.poll_iter() {
             match event {
                 Event::Quit { .. }
@@ -164,6 +156,15 @@ fn main() -> Result<(), String> /*Error Handling*/{
             player.update(&event_pump,&mut enemy_shots.shots,&mut sl);
             enemy_shots.update();
             formations.update(&mut player.gun.shots,&mut enemy_shots,&mut rng,&mut sl);
+            //cheak for end of game
+            if player.lives<=0{
+                println!("Lose");
+                break 'running;
+            }
+            if formations.formations.len() == formations.formation_number{
+                println!("Win");
+                break 'running;
+            }
             //draw objects
             sky.draw(&mut canvas).unwrap();
             player.draw(&mut canvas).unwrap();

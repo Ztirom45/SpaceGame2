@@ -90,7 +90,7 @@ fn main() -> Result<(), String> /*Error Handling*/{
     let mut rng = rand::thread_rng();
     //objects
     let mut menu = Menu{
-        image_buttons:&img["Buttons"],
+        image_buttons:&img["Buttons2"],
         image_mode1:&img["NormalMode"],
     };
     let mut menu_active:bool = true;

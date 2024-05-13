@@ -23,6 +23,7 @@ pub struct Enemy<'a>{
     pub actions:usize,
     pub last_time_shot:u8,
     pub last_time_hit:u8,
+    pub shot_probability:u8,//1:shoot_probability
 }
 impl Enemy<'_>{
     pub fn draw(&self, canvas: &mut sdl2::render::Canvas<sdl2::video::Window>) -> Result<(), String>{
@@ -140,6 +141,7 @@ impl Formations<'_>{
                 actions:0,
                 last_time_shot:0,
                 last_time_hit:0,
+                shot_probability:20,
             });
             self.formations[0].enemys[i as usize].enemy_path.make_std();
 
@@ -163,6 +165,7 @@ impl Formations<'_>{
                     actions:0,
                     last_time_shot:0,
                     last_time_hit:0,
+                    shot_probability:20,
                 });
                 self.formations[1].enemys[current_enemy].enemy_path.make_std();
                 current_enemy+=1;
@@ -187,6 +190,7 @@ impl Formations<'_>{
                 actions:0,
                 last_time_shot:0,
                 last_time_hit:0,
+                shot_probability:20,
             });
             self.formations[2].enemys[i as usize].enemy_path.make_std();
         }
@@ -208,6 +212,7 @@ impl Formations<'_>{
             actions:0,
             last_time_shot:0,
             last_time_hit:0,
+            shot_probability:10,
         });
         self.formations[2].enemys.push(Enemy{
             rect: Rect::new(500,50,ENEMY_W,ENEMY_H),
@@ -227,6 +232,7 @@ impl Formations<'_>{
             actions:0,
             last_time_shot:0,
             last_time_hit:0,
+            shot_probability:10,
         });
 
     }

@@ -154,21 +154,25 @@ impl Formations<'_>{
             texture_enemy_hit: self.texture_enemy_hit,
             sound_enemy_die: self.sound_enemy_die,
         });
-        for i in 0..8{
-            self.formations[1].enemys.push(Enemy{
-                rect: Rect::new(i*50+200,100,ENEMY_W,ENEMY_H),
-                speed:2,
-                lives:3,
-                texture:self.texture_enemy,
-                texture_hit:self.texture_enemy_hit,
-                enemy_path:EnemyPath{data:Vec::new()},
-                motion_counter:0,
-                actions:0,
-                last_time_shot:0,
-                last_time_hit:0,
-            });
-            self.formations[1].enemys[i as usize].enemy_path.make_std();
+        let mut current_enemy:usize = 0;
+        for y in 0..2{
+            for x in 0..8{
+                self.formations[1].enemys.push(Enemy{
+                    rect: Rect::new(x*50+200,100+y*50,ENEMY_W,ENEMY_H),
+                    speed:2,
+                    lives:3,
+                    texture:self.texture_enemy,
+                    texture_hit:self.texture_enemy_hit,
+                    enemy_path:EnemyPath{data:Vec::new()},
+                    motion_counter:0,
+                    actions:0,
+                    last_time_shot:0,
+                    last_time_hit:0,
+                });
+                self.formations[1].enemys[current_enemy].enemy_path.make_std();
+                current_enemy+=1;
 
+            }
         }
     }
     pub fn update(&mut self,shots: &mut Vec<Shot>,own_shots: &mut EnemyShots,rng: &mut ThreadRng,sl:&mut Soloud){

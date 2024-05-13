@@ -106,6 +106,7 @@ fn main() -> Result<(), String> /*Error Handling*/{
         formations:Vec::new(),
         formation_number:0,
         texture_enemy:&img["Enemy"],
+        texture_enemy2:&img["Enemy2"],
         texture_enemy_hit:&img["Enemy_hit"],
         sound_enemy_die:&sound["explosion"],
     

@@ -1,3 +1,5 @@
+use std::path::Path;
+
 /*
 Code written by Ztirom45
 LICENSE: GPL4
@@ -44,16 +46,9 @@ impl Enemy<'_>{
         Ok(())
     }
     pub fn update(&mut self,player_shots:&mut Vec<Shot>,own_shots:&mut EnemyShots,rng:&mut ThreadRng,sl:&mut Soloud){
-        //move
-        match self.enemy_path.data[self.actions].direction{
-               Direction::Up=>self.rect.y -= self.speed,
-               Direction::Down=>self.rect.y += self.speed,
-               Direction::Right=>self.rect.x += self.speed,
-               Direction::Left=>self.rect.x -= self.speed,
-        }
         //shot
 
-        if (self.last_time_shot > SHOT_SPAWN_DELAY_ENEMY) && (rng.gen_range(0..20) == 0){
+        if (self.last_time_shot > SHOT_SPAWN_DELAY_ENEMY) && (rng.gen_range(0..self.shot_probability) == 0){
             own_shots.shot(self.rect.x,self.rect.y,sl);
             self.last_time_shot = 0;
         }
@@ -73,12 +68,24 @@ impl Enemy<'_>{
                 self.last_time_hit+=1
             }
         }
-        self.motion_counter += 1;
-        if self.motion_counter > self.enemy_path.data[self.actions].time{
-            self.motion_counter = 0;
-            self.actions += 1;
-            if self.actions >= self.enemy_path.data.len(){
-                self.actions = 0;
+
+        //motion
+        if self.enemy_path.data.len()>0{
+            //move
+            match self.enemy_path.data[self.actions].direction{
+                   Direction::Up=>self.rect.y -= self.speed,
+                   Direction::Down=>self.rect.y += self.speed,
+                   Direction::Right=>self.rect.x += self.speed,
+                   Direction::Left=>self.rect.x -= self.speed,
+            }
+            //cheak next motion
+            self.motion_counter += 1;
+            if self.motion_counter > self.enemy_path.data[self.actions].time{
+                self.motion_counter = 0;
+                self.actions += 1;
+                if self.actions >= self.enemy_path.data.len(){
+                    self.actions = 0;
+                }
             }
         }
         
@@ -234,8 +241,109 @@ impl Formations<'_>{
             last_time_hit:0,
             shot_probability:10,
         });
+//FORMATION 4 -------------------------------------------------------------------------------        
+        self.formations.push(Formation{ 
+            enemys:Vec::new(),
+            sound_enemy_die: self.sound_enemy_die,
+        });
+        self.formations[3].enemys.push(Enemy{
+            rect: Rect::new(480,50,ENEMY_W,ENEMY_H),
+            speed:8,
+            lives:10,
+            texture:self.texture_enemy2,
+            texture_hit:self.texture_enemy_hit,
+            enemy_path:EnemyPath{
+                    data: vec![
+                        Step{direction:Direction::Down,time:20},
+                        Step{direction:Direction::Left,time:20},
+                        Step{direction:Direction::Up,time:20},
+                        Step{direction:Direction::Right,time:20},
+                    ]
+                },
+            motion_counter:0,
+            actions:0,
+            last_time_shot:0,
+            last_time_hit:0,
+            shot_probability:10,
+        });
+        self.formations[3].enemys.push(Enemy{
+            rect: Rect::new(320,50,ENEMY_W,ENEMY_H),
+            speed:8,
+            lives:10,
+            texture:self.texture_enemy2,
+            texture_hit:self.texture_enemy_hit,
+            enemy_path:EnemyPath{
+                    data: vec![
+                        Step{direction:Direction::Right,time:20},
+                        Step{direction:Direction::Down,time:20},
+                        Step{direction:Direction::Left,time:20},
+                        Step{direction:Direction::Up,time:20},
+                    ]
+                },
+            motion_counter:0,
+            actions:0,
+            last_time_shot:0,
+            last_time_hit:0,
+            shot_probability:10,
+        });
+        self.formations[3].enemys.push(Enemy{
+            rect: Rect::new(320,210,ENEMY_W,ENEMY_H),
+            speed:8,
+            lives:10,
+            texture:self.texture_enemy2,
+            texture_hit:self.texture_enemy_hit,
+            enemy_path:EnemyPath{
+                    data: vec![
+                        Step{direction:Direction::Up,time:20},
+                        Step{direction:Direction::Right,time:20},
+                        Step{direction:Direction::Down,time:20},
+                        Step{direction:Direction::Left,time:20},
+                   ]
+                },
+            motion_counter:0,
+            actions:0,
+            last_time_shot:0,
+            last_time_hit:0,
+            shot_probability:10,
+        });
+        self.formations[3].enemys.push(Enemy{
+            rect: Rect::new(480,210,ENEMY_W,ENEMY_H),
+            speed:8,
+            lives:10,
+            texture:self.texture_enemy2,
+            texture_hit:self.texture_enemy_hit,
+            enemy_path:EnemyPath{
+                    data: vec![
+                        Step{direction:Direction::Left,time:20},
+                        Step{direction:Direction::Up,time:20},
+                        Step{direction:Direction::Right,time:20},
+                        Step{direction:Direction::Down,time:20},
 
+                    ]
+                },
+            motion_counter:0,
+            actions:0,
+            last_time_shot:0,
+            last_time_hit:0,
+            shot_probability:10,
+        });
+        self.formations[3].enemys.push(Enemy{
+            rect: Rect::new(400,130,ENEMY_W,ENEMY_H),
+            speed:8,
+            lives:10,
+            texture:self.texture_enemy2,
+            texture_hit:self.texture_enemy_hit,
+            enemy_path:EnemyPath{
+                    data: Vec::new(),
+                },
+            motion_counter:0,
+            actions:0,
+            last_time_shot:0,
+            last_time_hit:0,
+            shot_probability:10,
+        });
     }
+
     pub fn update(&mut self,shots: &mut Vec<Shot>,own_shots: &mut EnemyShots,rng: &mut ThreadRng,sl:&mut Soloud){
         self.formations[self.formation_number].update(shots,own_shots,rng,sl);
         if self.formations[self.formation_number].enemys.len() == 0{

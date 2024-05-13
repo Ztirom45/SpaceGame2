@@ -102,11 +102,21 @@ fn main() -> Result<(), String> /*Error Handling*/{
         sound_hit:&sound["hit"],
 
     };
-    let mut formation:Formation = Formation{ 
-        enemys:Vec::new(),
-        texture_enemy: &img["Enemy"],
-        texture_enemy_hit: &img["Enemy_hit"],
-        sound_enemy_die:&sound["explosion"],
+    let mut formations:Formations = Formations{
+        formations:vec![Formation{ 
+            enemys:Vec::new(),
+            texture_enemy: &img["Enemy"],
+            texture_enemy_hit: &img["Enemy_hit"],
+            sound_enemy_die:&sound["explosion"],
+        },Formation{ 
+            enemys:Vec::new(),
+            texture_enemy: &img["Enemy"],
+            texture_enemy_hit: &img["Enemy_hit"],
+            sound_enemy_die:&sound["explosion"],
+        }
+        ],
+        formation_number:0,
+    
     };
     let mut enemy_shots = EnemyShots{
         shots:Vec::new(),
@@ -114,14 +124,14 @@ fn main() -> Result<(), String> /*Error Handling*/{
         sound_shot:&sound["laser2"],
     };
 
-    formation.init();
+    formations.init();
     //debuging:   
     'running: loop {
         if player.lives<=0{
             println!("Lose");
             break 'running;
         }
-        if formation.enemys.len() <= 0{
+        if formations.formations.len() == formations.formation_number{
             println!("Win");
             break 'running;
         }
@@ -142,7 +152,7 @@ fn main() -> Result<(), String> /*Error Handling*/{
 
         sky.draw(&mut canvas).unwrap();
         player.draw(&mut canvas).unwrap();
-        formation.draw(&mut canvas).unwrap();
+        formations.draw(&mut canvas).unwrap();
         enemy_shots.draw(&mut canvas).unwrap();
 
         canvas.present();
@@ -151,7 +161,7 @@ fn main() -> Result<(), String> /*Error Handling*/{
         sky.update();
         player.update(&event_pump,&mut enemy_shots.shots,&mut sl);
         enemy_shots.update();
-        formation.update(&mut player.gun.shots,&mut enemy_shots,&mut rng,&mut sl);
+        formations.update(&mut player.gun.shots,&mut enemy_shots,&mut rng,&mut sl);
     }
     
     Ok(())

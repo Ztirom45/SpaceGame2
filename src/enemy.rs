@@ -131,3 +131,26 @@ impl Formation<'_>{
     }
    
 }
+
+pub struct Formations<'a>{
+    pub formations:Vec<Formation<'a>>,
+    pub formation_number:usize,
+}
+
+impl Formations<'_>{
+    pub fn init(&mut self){
+        for formation in self.formations.iter_mut(){
+            formation.init();
+        }
+    }
+    pub fn update(&mut self,shots: &mut Vec<Shot>,own_shots: &mut EnemyShots,rng: &mut ThreadRng,sl:&mut Soloud){
+        self.formations[self.formation_number].update(shots,own_shots,rng,sl);
+        if self.formations[self.formation_number].enemys.len() == 0{
+            self.formation_number+=1;
+        }
+    }
+    pub fn draw(&self, canvas: &mut sdl2::render::Canvas<sdl2::video::Window>) -> Result<(), String>{
+        self.formations[self.formation_number].draw(canvas).map_err(|e| e.to_string())?;
+        Ok(())
+    }
+}

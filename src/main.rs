@@ -112,7 +112,7 @@ fn main() -> Result<(), String> /*Error Handling*/{
     };
     let mut formations:Formations = Formations{
         formations:Vec::new(),
-        formation_number:3,
+        formation_number:0,
         texture_enemy:&img["Enemy"],
         texture_enemy2:&img["Enemy2"],
         texture_enemy_hit:&img["Enemy_hit"],
@@ -121,7 +121,7 @@ fn main() -> Result<(), String> /*Error Handling*/{
     };
     let mut enemy_shots = EnemyShots{
         shots:Vec::new(),
-        texture:&img["Shot"],
+        texture:&img["Shot2"],
         sound_shot:&sound["laser2"],
     };
 

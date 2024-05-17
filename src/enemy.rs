@@ -26,6 +26,21 @@ pub struct Enemy<'a>{
     pub shot_probability:u8,//1:shoot_probability
 }
 impl Enemy<'_>{
+    pub fn new_enemy1<'a>(x:i32,y:i32,texture:&'a Texture<'a>,texture_hit:&'a Texture<'a>) -> Enemy<'a>{
+        Enemy{
+            rect: Rect::new(x,y,ENEMY_W,ENEMY_H),
+            speed:2,
+            lives:3,
+            texture,
+            texture_hit,
+            enemy_path:EnemyPath::new_std(),
+            motion_counter:0,
+            actions:0,
+            last_time_shot:0,
+            last_time_hit:0,
+            shot_probability:20,
+        }
+    }
     pub fn draw(&self, canvas: &mut sdl2::render::Canvas<sdl2::video::Window>) -> Result<(), String>{
         
         if self.last_time_hit <= HIT_SHOW_DELAY{
@@ -133,22 +148,9 @@ impl Formations<'_>{
         self.formations.push(Formation{ 
             enemys:Vec::new(),
             sound_enemy_die: self.sound_enemy_die,
-        });
+        }); 
         for i in 0..10{
-            self.formations[0].enemys.push(Enemy{
-                rect: Rect::new(i*50+150,100,ENEMY_W,ENEMY_H),
-                speed:2,
-                lives:3,
-                texture:self.texture_enemy,
-                texture_hit:self.texture_enemy_hit,
-                enemy_path:EnemyPath{data:Vec::new()},
-                motion_counter:0,
-                actions:0,
-                last_time_shot:0,
-                last_time_hit:0,
-                shot_probability:20,
-            });
-            self.formations[0].enemys[i as usize].enemy_path.make_std();
+            self.formations[0].enemys.push(Enemy::new_enemy1(i*50+150,100,self.texture_enemy,self.texture_enemy_hit));
 
         }
     //FORMATION 1 -------------------------------------------------------------------------------        
@@ -156,26 +158,9 @@ impl Formations<'_>{
             enemys:Vec::new(),
             sound_enemy_die: self.sound_enemy_die,
         });
-        let mut current_enemy:usize = 0;
         for y in 0..2{
             for x in 0..8{
-                self.formations[1].enemys.push(Enemy{
-                    rect: Rect::new(x*50+200,100+y*50,ENEMY_W,ENEMY_H),
-                    speed:2,
-                    lives:3,
-                    texture:self.texture_enemy,
-                    texture_hit:self.texture_enemy_hit,
-                    enemy_path:EnemyPath{data:Vec::new()},
-                    motion_counter:0,
-                    actions:0,
-                    last_time_shot:0,
-                    last_time_hit:0,
-                    shot_probability:20,
-                });
-                self.formations[1].enemys[current_enemy].enemy_path.make_std();
-                current_enemy+=1;
-
-            }
+                self.formations[1].enemys.push(Enemy::new_enemy1(x*50+150,100+y*50,self.texture_enemy,self.texture_enemy_hit));            }
         }
     //FORMATION 3 -------------------------------------------------------------------------------        
         self.formations.push(Formation{ 
@@ -184,22 +169,10 @@ impl Formations<'_>{
         });
 
         for i in 0..8{
-            self.formations[2].enemys.push(Enemy{
-                rect: Rect::new(i*50+200,100,ENEMY_W,ENEMY_H),
-                speed:2,
-                lives:3,
-                texture:self.texture_enemy,
-                texture_hit:self.texture_enemy_hit,
-                enemy_path:EnemyPath{data:Vec::new()},
-                motion_counter:0,
-                actions:0,
-                last_time_shot:0,
-                last_time_hit:0,
-                shot_probability:20,
-            });
-            self.formations[2].enemys[i as usize].enemy_path.make_std();
+            self.formations[2].enemys.push(Enemy::new_enemy1(i*50+200,100,self.texture_enemy,self.texture_enemy_hit));
         }
-        self.formations[2].enemys.push(Enemy{
+
+         self.formations[2].enemys.push(Enemy{
             rect: Rect::new(300,50,ENEMY_W,ENEMY_H),
             speed:8,
             lives:10,

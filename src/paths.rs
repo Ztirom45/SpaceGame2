@@ -1,4 +1,3 @@
-
 pub enum Direction{  
     Right,
     Down,
@@ -15,10 +14,14 @@ pub struct EnemyPath{
 }
 
 impl EnemyPath {
-    pub fn make_std(&mut self){
-        self.data.push(Step{direction:Direction::Right,time:20u16});
-        self.data.push(Step{direction:Direction::Down,time:20u16});
-        self.data.push(Step{direction:Direction::Left,time:20u16});
-        self.data.push(Step{direction:Direction::Up,time:20u16});
+    pub fn new_std()->EnemyPath{
+        EnemyPath{
+            data: vec![
+                Step{direction:Direction::Right,time:20u16},
+                Step{direction:Direction::Down,time:20u16},
+                Step{direction:Direction::Left,time:20u16},
+                Step{direction:Direction::Up,time:20u16},
+            ]
+        }
     }
 }

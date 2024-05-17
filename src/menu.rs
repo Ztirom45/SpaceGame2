@@ -10,7 +10,8 @@ use crate::config::*;
 
 pub struct Menu<'a>{
     pub image_buttons:&'a Texture<'a>,
-    pub image_mode1:&'a Texture<'a>
+    pub image_mode1:&'a Texture<'a>,
+    pub image_mode_background:&'a Texture<'a>,
 }
 
 impl Menu<'_>{

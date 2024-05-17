@@ -92,6 +92,7 @@ fn main() -> Result<(), String> /*Error Handling*/{
     let mut menu = Menu{
         image_buttons:&img["Buttons2"],
         image_mode1:&img["NormalMode"],
+        image_mode_background:&img["Background"],
     };
     let mut menu_active:bool = true;
 

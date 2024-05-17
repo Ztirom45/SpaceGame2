@@ -1,3 +1,5 @@
+use std::path::Path;
+
 /*
 Code written by Ztirom45
 LICENSE: GPL4
@@ -41,6 +43,22 @@ impl Enemy<'_>{
             shot_probability:20,
         }
     }
+    pub fn new_enemy2<'a>(x:i32,y:i32,enemy_path:EnemyPath,texture:&'a Texture<'a>,texture_hit:&'a Texture<'a>) -> Enemy<'a>{
+        Enemy{
+            rect: Rect::new(x,y,ENEMY_W,ENEMY_H),
+            speed:8,
+            lives:10,
+            texture,
+            texture_hit,
+            enemy_path,
+            motion_counter:0,
+            actions:0,
+            last_time_shot:0,
+            last_time_hit:0,
+            shot_probability:10,
+        }
+    }
+
     pub fn draw(&self, canvas: &mut sdl2::render::Canvas<sdl2::video::Window>) -> Result<(), String>{
         
         if self.last_time_hit <= HIT_SHOW_DELAY{
@@ -171,47 +189,34 @@ impl Formations<'_>{
         for i in 0..8{
             self.formations[2].enemys.push(Enemy::new_enemy1(i*50+200,100,self.texture_enemy,self.texture_enemy_hit));
         }
-
-         self.formations[2].enemys.push(Enemy{
-            rect: Rect::new(300,50,ENEMY_W,ENEMY_H),
-            speed:8,
-            lives:10,
-            texture:self.texture_enemy2,
-            texture_hit:self.texture_enemy_hit,
-            enemy_path:EnemyPath{
+        self.formations[2].enemys.push(Enemy::new_enemy2(
+            300,
+            50,
+            EnemyPath{
                     data: vec![
                         Step{direction:Direction::Down,time:10},
                         Step{direction:Direction::Left,time:30},
                         Step{direction:Direction::Up,time:10},
                         Step{direction:Direction::Right,time:30},
                     ]
-                },
-            motion_counter:0,
-            actions:0,
-            last_time_shot:0,
-            last_time_hit:0,
-            shot_probability:10,
-        });
-        self.formations[2].enemys.push(Enemy{
-            rect: Rect::new(500,50,ENEMY_W,ENEMY_H),
-            speed:8,
-            lives:10,
-            texture:self.texture_enemy2,
-            texture_hit:self.texture_enemy_hit,
-            enemy_path:EnemyPath{
+            },
+            self.texture_enemy2,
+            self.texture_enemy_hit
+        ));
+        self.formations[2].enemys.push(Enemy::new_enemy2(
+            500,
+            50,
+            EnemyPath{
                     data: vec![
                         Step{direction:Direction::Down,time:10},
                         Step{direction:Direction::Right,time:30},
                         Step{direction:Direction::Up,time:10},
                         Step{direction:Direction::Left,time:30},
                     ]
-                },
-            motion_counter:0,
-            actions:0,
-            last_time_shot:0,
-            last_time_hit:0,
-            shot_probability:10,
-        });
+            },
+            self.texture_enemy2,
+            self.texture_enemy_hit
+        ));
 //FORMATION 4 -------------------------------------------------------------------------------        
         self.formations.push(Formation{ 
             enemys:Vec::new(),

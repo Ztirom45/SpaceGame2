@@ -27,3 +27,6 @@ pub const ENEMY_W:u32 = 19*2;
 pub const ENEMY_H:u32 = 21*2;
 pub const SHOT_SPAWN_DELAY_ENEMY:u8 = 10;
 pub const HIT_SHOW_DELAY:u8 = 2;
+
+//Menu
+pub const BUTTON_SIZE:u32 = 40;

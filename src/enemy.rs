@@ -130,6 +130,13 @@ pub struct Formation<'a>{
 }
 
 impl Formation<'_>{
+    pub fn new<'a>(sound_enemy_die:&'a audio::Wav) -> Formation{
+        Formation{
+            enemys:Vec::new(),
+            sound_enemy_die
+        }
+    }
+
     pub fn draw(&self, canvas: &mut sdl2::render::Canvas<sdl2::video::Window>) -> Result<(), String>{
         for enemy in self.enemys.iter(){
             enemy.draw(canvas).map_err(|e| e.to_string())?;
@@ -163,29 +170,21 @@ pub struct Formations<'a>{
 impl Formations<'_>{
     pub fn init(&mut self){
 //FORMATION 0 -------------------------------------------------------------------------------        
-        self.formations.push(Formation{ 
-            enemys:Vec::new(),
-            sound_enemy_die: self.sound_enemy_die,
-        }); 
+        self.formations.push(Formation::new(self.sound_enemy_die));
         for i in 0..10{
             self.formations[0].enemys.push(Enemy::new_enemy1(i*50+150,100,self.texture_enemy,self.texture_enemy_hit));
 
         }
-    //FORMATION 1 -------------------------------------------------------------------------------        
-        self.formations.push(Formation{ 
-            enemys:Vec::new(),
-            sound_enemy_die: self.sound_enemy_die,
-        });
+//FORMATION 1 -------------------------------------------------------------------------------        
+        self.formations.push(Formation::new(self.sound_enemy_die));
+        
         for y in 0..2{
             for x in 0..8{
                 self.formations[1].enemys.push(Enemy::new_enemy1(x*50+150,100+y*50,self.texture_enemy,self.texture_enemy_hit));            }
         }
-    //FORMATION 3 -------------------------------------------------------------------------------        
-        self.formations.push(Formation{ 
-            enemys:Vec::new(),
-            sound_enemy_die: self.sound_enemy_die,
-        });
-
+//FORMATION 3 -------------------------------------------------------------------------------        
+        self.formations.push(Formation::new(self.sound_enemy_die));
+        
         for i in 0..8{
             self.formations[2].enemys.push(Enemy::new_enemy1(i*50+200,100,self.texture_enemy,self.texture_enemy_hit));
         }
@@ -218,106 +217,66 @@ impl Formations<'_>{
             self.texture_enemy_hit
         ));
 //FORMATION 4 -------------------------------------------------------------------------------        
-        self.formations.push(Formation{ 
-            enemys:Vec::new(),
-            sound_enemy_die: self.sound_enemy_die,
-        });
-        self.formations[3].enemys.push(Enemy{
-            rect: Rect::new(480,50,ENEMY_W,ENEMY_H),
-            speed:8,
-            lives:10,
-            texture:self.texture_enemy2,
-            texture_hit:self.texture_enemy_hit,
-            enemy_path:EnemyPath{
+        self.formations.push(Formation::new(self.sound_enemy_die));
+        self.formations[3].enemys.push(Enemy::new_enemy2(
+            480,50,
+            EnemyPath{
                     data: vec![
                         Step{direction:Direction::Down,time:20},
                         Step{direction:Direction::Left,time:20},
                         Step{direction:Direction::Up,time:20},
                         Step{direction:Direction::Right,time:20},
                     ]
-                },
-            motion_counter:0,
-            actions:0,
-            last_time_shot:0,
-            last_time_hit:0,
-            shot_probability:10,
-        });
-        self.formations[3].enemys.push(Enemy{
-            rect: Rect::new(320,50,ENEMY_W,ENEMY_H),
-            speed:8,
-            lives:10,
-            texture:self.texture_enemy2,
-            texture_hit:self.texture_enemy_hit,
-            enemy_path:EnemyPath{
-                    data: vec![
-                        Step{direction:Direction::Right,time:20},
-                        Step{direction:Direction::Down,time:20},
-                        Step{direction:Direction::Left,time:20},
-                        Step{direction:Direction::Up,time:20},
-                    ]
-                },
-            motion_counter:0,
-            actions:0,
-            last_time_shot:0,
-            last_time_hit:0,
-            shot_probability:10,
-        });
-        self.formations[3].enemys.push(Enemy{
-            rect: Rect::new(320,210,ENEMY_W,ENEMY_H),
-            speed:8,
-            lives:10,
-            texture:self.texture_enemy2,
-            texture_hit:self.texture_enemy_hit,
-            enemy_path:EnemyPath{
-                    data: vec![
-                        Step{direction:Direction::Up,time:20},
-                        Step{direction:Direction::Right,time:20},
-                        Step{direction:Direction::Down,time:20},
-                        Step{direction:Direction::Left,time:20},
-                   ]
-                },
-            motion_counter:0,
-            actions:0,
-            last_time_shot:0,
-            last_time_hit:0,
-            shot_probability:10,
-        });
-        self.formations[3].enemys.push(Enemy{
-            rect: Rect::new(480,210,ENEMY_W,ENEMY_H),
-            speed:8,
-            lives:10,
-            texture:self.texture_enemy2,
-            texture_hit:self.texture_enemy_hit,
-            enemy_path:EnemyPath{
-                    data: vec![
-                        Step{direction:Direction::Left,time:20},
-                        Step{direction:Direction::Up,time:20},
-                        Step{direction:Direction::Right,time:20},
-                        Step{direction:Direction::Down,time:20},
+            },
+            self.texture_enemy2,
+            self.texture_enemy_hit
+        ));
 
+        self.formations[3].enemys.push(Enemy::new_enemy2(
+            320,50,
+            EnemyPath{
+                    data: vec![
+                        Step{direction:Direction::Right,time:20},
+                        Step{direction:Direction::Down,time:20},
+                        Step{direction:Direction::Left,time:20},
+                        Step{direction:Direction::Up,time:20},
                     ]
-                },
-            motion_counter:0,
-            actions:0,
-            last_time_shot:0,
-            last_time_hit:0,
-            shot_probability:10,
-        });
-        self.formations[3].enemys.push(Enemy{
-            rect: Rect::new(400,130,ENEMY_W,ENEMY_H),
-            speed:8,
-            lives:10,
-            texture:self.texture_enemy2,
-            texture_hit:self.texture_enemy_hit,
-            enemy_path:EnemyPath{
-                    data: Vec::new(),
-                },
-            motion_counter:0,
-            actions:0,
-            last_time_shot:0,
-            last_time_hit:0,
-            shot_probability:10,
-        });
+            },
+            self.texture_enemy2,
+            self.texture_enemy_hit
+        ));
+        self.formations[3].enemys.push(Enemy::new_enemy2(
+            320,210,
+            EnemyPath{
+                    data: vec![
+                        Step{direction:Direction::Up,time:20},
+                        Step{direction:Direction::Right,time:20},
+                        Step{direction:Direction::Down,time:20},
+                        Step{direction:Direction::Left,time:20},
+                    ]
+            },
+            self.texture_enemy2,
+            self.texture_enemy_hit
+        ));
+        self.formations[3].enemys.push(Enemy::new_enemy2(
+            480,210,
+            EnemyPath{
+                    data: vec![
+                        Step{direction:Direction::Left,time:20},
+                        Step{direction:Direction::Up,time:20},
+                        Step{direction:Direction::Right,time:20},
+                        Step{direction:Direction::Down,time:20},
+                    ]
+            },
+            self.texture_enemy2,
+            self.texture_enemy_hit
+        ));
+        self.formations[3].enemys.push(Enemy::new_enemy2(
+            400,130,
+            EnemyPath{data:Vec::new()},
+            self.texture_enemy2,
+            self.texture_enemy_hit
+        ));
     }
 
     pub fn update(&mut self,shots: &mut Vec<Shot>,own_shots: &mut EnemyShots,rng: &mut ThreadRng,sl:&mut Soloud){

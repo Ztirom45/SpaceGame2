@@ -112,7 +112,7 @@ fn main() -> Result<(), String> /*Error Handling*/{
     };
     let mut formations:Formations = Formations{
         formations:Vec::new(),
-        formation_number:0,
+        formation_number:3,
         texture_enemy:&img["Enemy"],
         texture_enemy2:&img["Enemy2"],
         texture_enemy_hit:&img["Enemy_hit"],

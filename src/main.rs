@@ -7,7 +7,7 @@ extern crate sdl2;
 
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
-use sdl2::pixels::Color;
+use sdl2::pixels::{Color,PixelFormatEnum};
 use sdl2::surface::Surface;
 use sdl2::render::Texture;
 use sdl2::rect::Rect;
@@ -24,18 +24,19 @@ mod gun;
 mod paths;
 mod enemy;
 mod menu;
+mod font_parse;
 use crate::config::*;
 use crate::sky::*;
 use crate::player::*;
 use crate::gun::*;
 use crate::enemy::*;
 use crate::menu::*;
+use crate::font_parse::*;
 
-/*
 //Just for debugug pourposes
 fn print_type_of<T>(_: &T) {
     println!("{}", std::any::type_name::<T>())
-}*/
+}
 
 
 fn main() -> Result<(), String> /*Error Handling*/{
@@ -55,7 +56,7 @@ fn main() -> Result<(), String> /*Error Handling*/{
     canvas.present();
     let mut event_pump = sdl_context.event_pump()?; 
     let texture_creator = canvas.texture_creator();
-    
+    print_type_of(&texture_creator);
     //loads texture by name into the hashmap
     //use it by borrowing &img["texture name"]
     let mut img:HashMap<String, Texture> = HashMap::new();
@@ -86,14 +87,42 @@ fn main() -> Result<(), String> /*Error Handling*/{
 
 
     } 
+    //Fonts
+    let ttf_context = sdl2::ttf::init().map_err(|e| e.to_string()).unwrap();
+    let font = ttf_context.load_font("rsc/font/FreeSans.ttf",128).unwrap();
+    let font_color = Color::RGB(255, 255, 255);
+    let surface_font_normal = font
+        .render("Normal Mode")
+        .blended(font_color)
+        .map_err(|e| e.to_string())?;
+    let surface_font_normal2 = font
+        .render("Press Space to start")
+        .blended(font_color)
+        .map_err(|e| e.to_string())?;
     //random
     let mut rng = rand::thread_rng();
     //objects
+    let text_normal_size = surface_font_normal.size();
+    let text_normal_size2 = surface_font_normal2.size();
     let mut menu = Menu{
-        image_buttons:&img["Buttons2"],
-        image_mode1:&img["NormalMode"],
         image_mode_background:&img["Background"],
+        modes:vec![
+            Text{
+            texture:texture_creator.create_texture_from_surface(surface_font_normal).unwrap(),
+            rect:Rect::new(0,0,//initialized later
+                text_normal_size.0/FONT_SCALE_FAKTOR,
+                text_normal_size.1/FONT_SCALE_FAKTOR,
+            )},
+            Text{
+            texture:texture_creator.create_texture_from_surface(surface_font_normal2).unwrap(),
+            rect:Rect::new(0,0,//initialized later
+                text_normal_size2.0/FONT_SCALE_FAKTOR,
+                text_normal_size2.1/FONT_SCALE_FAKTOR,
+            )},
+        ],
+        selcted_mode:0,
     };
+    menu.init();
     let mut menu_active:bool = true;
 
     let mut sky:Sky = Sky{stars:Vec::new()};
@@ -151,6 +180,7 @@ fn main() -> Result<(), String> /*Error Handling*/{
             sky.update();
             sky.draw(&mut canvas).unwrap();
             menu.main(&mut canvas).unwrap();
+            canvas.set_draw_color(Color::RGBA(195, 217, 255, 255)); 
         }else{
             //procces objects
             sky.update();

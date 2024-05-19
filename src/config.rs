@@ -29,4 +29,7 @@ pub const SHOT_SPAWN_DELAY_ENEMY:u8 = 10;
 pub const HIT_SHOW_DELAY:u8 = 2;
 
 //Menu
-pub const BUTTON_SIZE:u32 = 40;
+
+//font
+pub const FONT_SCALE_FAKTOR:u32 = 4;
+pub const FONT_Y_DISTANCE:i32 = 120/FONT_SCALE_FAKTOR as i32;

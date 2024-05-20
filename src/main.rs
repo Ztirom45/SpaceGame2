@@ -179,7 +179,7 @@ fn main() -> Result<(), String> /*Error Handling*/{
         if menu_active{
             sky.update();
             sky.draw(&mut canvas).unwrap();
-            menu.main(&mut canvas).unwrap();
+            menu.main(&mut canvas,&event_pump).unwrap();
             canvas.set_draw_color(Color::RGBA(195, 217, 255, 255)); 
         }else{
             //procces objects

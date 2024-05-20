@@ -33,8 +33,11 @@ impl Menu<'_>{
         e: &EventPump
     ) -> Result<(), String>{ 
         //update cursor 
-        if e.keyboard_state().is_scancode_pressed(Scancode::S){
+        if e.keyboard_state().is_scancode_pressed(Scancode::S) && self.selcted_mode+1<self.modes.len(){
             self.selcted_mode += 1;
+        }
+        if e.keyboard_state().is_scancode_pressed(Scancode::W) && self.selcted_mode > 0{
+            self.selcted_mode -= 1;
         }
         //draw stuff
         canvas.copy(

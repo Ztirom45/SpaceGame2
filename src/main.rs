@@ -186,9 +186,12 @@ fn main() -> Result<(), String> /*Error Handling*/{
                     keycode: Some(Keycode::Space),
                     ..
                 }=>{
+                    if menu_active{
+                        player.init(menu.get_gamemode());
+                        formations.init();
+                    }
+
                     menu_active = false;
-                    player.init(menu.get_gamemode());
-                    formations.init();
                 },
                 _ => {}
             }

@@ -34,12 +34,6 @@ use crate::enemy::*;
 use crate::menu::*;
 use crate::font_parse::*;
 
-//Just for debugug pourposes
-fn print_type_of<T>(_: &T) {
-    println!("{}", std::any::type_name::<T>())
-}
-
-
 fn main() -> Result<(), String> /*Error Handling*/{
     //inititlizing SDL
     let sdl_context = sdl2::init()?;
@@ -57,7 +51,6 @@ fn main() -> Result<(), String> /*Error Handling*/{
     canvas.present();
     let mut event_pump = sdl_context.event_pump()?; 
     let texture_creator = canvas.texture_creator();
-    print_type_of(&texture_creator);
     //loads texture by name into the hashmap
     //use it by borrowing &img["texture name"]
     let mut img:HashMap<String, Texture> = HashMap::new();
@@ -217,7 +210,6 @@ fn main() -> Result<(), String> /*Error Handling*/{
             formations.update(&mut player.gun.shots,&mut enemy_shots,&mut rng,&mut sl);
             //cheak for end of game
             if player.lives<=0{
-                println!("Lose");
                 menu_active = true;
                 canvas.copy(&img["Lose"],None,None).unwrap();
                 canvas.present();
@@ -225,7 +217,6 @@ fn main() -> Result<(), String> /*Error Handling*/{
                 //break 'running;
             }
             if formations.formations.len() == formations.formation_number{
-                println!("Win");
                 //break 'running;
                 menu_active = true;
                 canvas.copy(&img["Win"],None,None).unwrap();

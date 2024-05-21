@@ -45,20 +45,24 @@ impl Player<'_>{
         Ok(())
     }
     pub fn update(&mut self,e: &sdl2::EventPump,enemy_shots:&mut Vec<Shot>,sl:&mut Soloud){
-        if e.keyboard_state().is_scancode_pressed(Scancode::A)
-        ||e.keyboard_state().is_scancode_pressed(Scancode::H){
+        if (e.keyboard_state().is_scancode_pressed(Scancode::A)
+        ||e.keyboard_state().is_scancode_pressed(Scancode::H))
+        && self.rect.x >0{
             self.rect.x -= self.speed;
         }
-        if e.keyboard_state().is_scancode_pressed(Scancode::D)
-        ||e.keyboard_state().is_scancode_pressed(Scancode::L){
+        if (e.keyboard_state().is_scancode_pressed(Scancode::D)
+        ||e.keyboard_state().is_scancode_pressed(Scancode::L))
+        && self.rect.x < (SCREEN_SIZE as i32-self.rect.w as i32){
             self.rect.x += self.speed;
         }
-        if e.keyboard_state().is_scancode_pressed(Scancode::W)
-        ||e.keyboard_state().is_scancode_pressed(Scancode::K){
+        if (e.keyboard_state().is_scancode_pressed(Scancode::W)
+        ||e.keyboard_state().is_scancode_pressed(Scancode::K))
+        && self.rect.y >0{
             self.rect.y -= self.speed;
         }
-        if e.keyboard_state().is_scancode_pressed(Scancode::S)
-        ||e.keyboard_state().is_scancode_pressed(Scancode::J){
+        if (e.keyboard_state().is_scancode_pressed(Scancode::S)
+        ||e.keyboard_state().is_scancode_pressed(Scancode::J))
+        && self.rect.y < (SCREEN_SIZE as i32-self.rect.h as i32){
             self.rect.y += self.speed;
         }
         if e.keyboard_state().is_scancode_pressed(Scancode::Space){

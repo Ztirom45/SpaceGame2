@@ -15,6 +15,7 @@ use std::collections::HashMap;
 use std::fs;
 use std::time::Duration;
 use soloud::*;
+use std::thread::sleep;
 
 
 mod sky;
@@ -215,12 +216,20 @@ fn main() -> Result<(), String> /*Error Handling*/{
             if player.lives<=0{
                 println!("Lose");
                 menu_active = true;
+                canvas.copy(&img["Lose"],None,None).unwrap();
+                canvas.present();
+                sleep(Duration::from_millis(300));
                 //break 'running;
             }
             if formations.formations.len() == formations.formation_number{
                 println!("Win");
                 //break 'running;
                 menu_active = true;
+                canvas.copy(&img["Win"],None,None).unwrap();
+                canvas.present();
+                sleep(Duration::from_millis(300));
+
+ 
             }
             //draw objects
             sky.draw(&mut canvas).unwrap();

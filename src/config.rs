@@ -14,6 +14,7 @@ pub const STARS_SPEED:f32     = 2.5;
 pub const PLAYER_W:u32   = 52;
 pub const PLAYER_H:u32   = 56;
 pub const PLAYER_LIVES:i8 = 10;
+pub const PLAYER_LIVES_HARD:i8 = 3;
 
 //gun
 pub const SHOT_W:u32 = 3;
@@ -33,3 +34,4 @@ pub const HIT_SHOW_DELAY:u8 = 2;
 //font
 pub const FONT_SCALE_FAKTOR:u32 = 4;
 pub const FONT_Y_DISTANCE:u32 = 120/FONT_SCALE_FAKTOR;
+pub const HELP_TEXT_SCALE_FACTOR:u32 = 8;

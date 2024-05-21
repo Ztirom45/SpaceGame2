@@ -169,6 +169,7 @@ pub struct Formations<'a>{
 
 impl Formations<'_>{
     pub fn init(&mut self){
+    self.formations.clear();
 //FORMATION 0 -------------------------------------------------------------------------------        
         self.formations.push(Formation::new(self.sound_enemy_die));
         for i in 0..10{

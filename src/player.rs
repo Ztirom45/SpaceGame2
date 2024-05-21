@@ -11,6 +11,7 @@ use sdl2::render::Texture;
 use soloud::audio;
 
 use crate::config::*;
+use crate::font_parse::Gamemode;
 use crate::gun::*;
 
 pub struct Player<'a>{
@@ -22,6 +23,12 @@ pub struct Player<'a>{
     pub sound_hit:&'a audio::Wav,
 }
 impl Player<'_>{
+    pub fn init(&mut self,mode:&Gamemode){
+        self.lives = match mode{
+            Gamemode::Normal => PLAYER_LIVES,
+            Gamemode::Hard => PLAYER_LIVES_HARD,
+        }
+    }
     pub fn draw(&self, canvas: &mut sdl2::render::Canvas<sdl2::video::Window>) -> Result<(), String>{
         canvas.copy(
             &self.texture,
@@ -32,7 +39,7 @@ impl Player<'_>{
         //draw lives: TODO: pretier
         canvas.set_draw_color(Color::RGB(100, 100, 100));
         canvas.fill_rect(Rect::new(650,10, 100, 10)).map_err(|e| e.to_string())?; 
-        canvas.set_draw_color(Color::RGB(255, 0, 0));
+        canvas.set_draw_color(Color::RGB(0,255, 0));
         canvas.fill_rect(Rect::new(650,10, (self.lives*(100/PLAYER_LIVES))as u32, 10)).map_err(|e| e.to_string())?;
 
         Ok(())

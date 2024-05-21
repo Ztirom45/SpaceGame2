@@ -95,32 +95,50 @@ fn main() -> Result<(), String> /*Error Handling*/{
         .render("Normal Mode")
         .blended(font_color)
         .map_err(|e| e.to_string())?;
-    let surface_font_normal2 = font
-        .render("Press Space to start")
+    let text_normal_size = surface_font_normal.size();
+    let surface_font_hard = font
+        .render("Hard Mode")
         .blended(font_color)
         .map_err(|e| e.to_string())?;
+    let text_hard_size = surface_font_hard.size();
+    let surface_font_help = font
+        .render("Space to start / [W,S], to select modes / controll with [W,A,S,D,SPACE]")
+        .blended(font_color)
+        .map_err(|e| e.to_string())?;
+    let text_help_size = surface_font_help.size();
+    
     //random
     let mut rng = rand::thread_rng();
     //objects
-    let text_normal_size = surface_font_normal.size();
-    let text_normal_size2 = surface_font_normal2.size();
     let mut menu = Menu{
         image_mode_background:&img["Background"],
         modes:vec![
-            Text{
+            MenuText{
             texture:texture_creator.create_texture_from_surface(surface_font_normal).unwrap(),
             rect:Rect::new(0,0,//initialized later
                 text_normal_size.0/FONT_SCALE_FAKTOR,
                 text_normal_size.1/FONT_SCALE_FAKTOR,
-            )},
-            Text{
-            texture:texture_creator.create_texture_from_surface(surface_font_normal2).unwrap(),
+            ),
+            gamemode:Gamemode::Normal,
+            },
+            MenuText{
+            texture:texture_creator.create_texture_from_surface(surface_font_hard).unwrap(),
             rect:Rect::new(0,0,//initialized later
-                text_normal_size2.0/FONT_SCALE_FAKTOR,
-                text_normal_size2.1/FONT_SCALE_FAKTOR,
-            )},
+                text_hard_size.0/FONT_SCALE_FAKTOR,
+                text_hard_size.1/FONT_SCALE_FAKTOR,
+            ),
+            gamemode:Gamemode::Hard,
+            },
         ],
         selcted_mode:0,
+        help_text:Text{
+            texture:texture_creator.create_texture_from_surface(surface_font_help).unwrap(),
+            rect:Rect::new(0,0,//initialized later
+                text_help_size.0/HELP_TEXT_SCALE_FACTOR,
+                text_help_size.1/HELP_TEXT_SCALE_FACTOR,
+            )
+        },
+
     };
     menu.init();
     let mut menu_active:bool = true;
@@ -155,7 +173,6 @@ fn main() -> Result<(), String> /*Error Handling*/{
         sound_shot:&sound["laser2"],
     };
 
-    formations.init();
     //debuging:   
     'running: loop {
         for event in event_pump.poll_iter() {
@@ -168,7 +185,11 @@ fn main() -> Result<(), String> /*Error Handling*/{
                 Event::KeyDown{
                     keycode: Some(Keycode::Space),
                     ..
-                }=> menu_active = false,
+                }=>{
+                    menu_active = false;
+                    player.init(menu.get_gamemode());
+                    formations.init();
+                },
                 _ => {}
             }
 
@@ -190,11 +211,13 @@ fn main() -> Result<(), String> /*Error Handling*/{
             //cheak for end of game
             if player.lives<=0{
                 println!("Lose");
-                break 'running;
+                menu_active = true;
+                //break 'running;
             }
             if formations.formations.len() == formations.formation_number{
                 println!("Win");
-                break 'running;
+                //break 'running;
+                menu_active = true;
             }
             //draw objects
             sky.draw(&mut canvas).unwrap();

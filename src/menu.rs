@@ -15,8 +15,9 @@ use crate::config::*;
 
 pub struct Menu<'a>{
     pub image_mode_background:&'a Texture<'a>,
-    pub modes:Vec<Text<'a>>,
+    pub modes:Vec<MenuText<'a>>,
     pub selcted_mode:usize,
+    pub help_text:Text<'a>,
 }
 impl Menu<'_>{
     pub fn init(&mut self){
@@ -26,6 +27,11 @@ impl Menu<'_>{
             i.rect.y = ypos;
             ypos += FONT_Y_DISTANCE as i32;
         }
+        self.help_text.rect.x = 150;
+        self.help_text.rect.y = 650-self.help_text.rect.h;
+    }
+    pub fn get_gamemode(&self)->&Gamemode{
+        &self.modes[self.selcted_mode].gamemode
     }
     pub fn main(
         &mut self,
@@ -62,7 +68,13 @@ impl Menu<'_>{
                 None,
                 mode.rect
             ).map_err(|e|e.to_string())?;
-       }
+        }
+
+        canvas.copy(
+            &self.help_text.texture,
+            None,
+            self.help_text.rect
+        ).map_err(|e|e.to_string())?;
         Ok(())
     }
 }

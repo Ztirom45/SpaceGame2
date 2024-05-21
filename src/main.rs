@@ -149,13 +149,16 @@ fn main() -> Result<(), String> /*Error Handling*/{
         rect:Rect::new(400,400,PLAYER_W,PLAYER_H),
         speed:10,
         texture:&img["Ship"],
+        texture_heart:&img["LiveOn"],
+        texture_heart_off:&img["LiveOff"],
         gun:Gun{
             shots:Vec::new(),
             texture:&img["Shot"],
             last_time_shot:0,
             sound:&sound["laser"],
         },
-        lives:PLAYER_LIVES,
+        lives:0,//initizilized later
+        max_lives:0,//"
         sound_hit:&sound["hit"],
 
     };

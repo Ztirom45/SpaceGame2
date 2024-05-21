@@ -170,6 +170,7 @@ pub struct Formations<'a>{
 impl Formations<'_>{
     pub fn init(&mut self){
     self.formations.clear();
+    self.formation_number = 0;
 //FORMATION 0 -------------------------------------------------------------------------------        
         self.formations.push(Formation::new(self.sound_enemy_die));
         for i in 0..10{
@@ -281,13 +282,18 @@ impl Formations<'_>{
     }
 
     pub fn update(&mut self,shots: &mut Vec<Shot>,own_shots: &mut EnemyShots,rng: &mut ThreadRng,sl:&mut Soloud){
-        self.formations[self.formation_number].update(shots,own_shots,rng,sl);
-        if self.formations[self.formation_number].enemys.len() == 0{
-            self.formation_number+=1;
+        if self.formation_number < self.formations.len(){
+            self.formations[self.formation_number].update(shots,own_shots,rng,sl);
+            if self.formations[self.formation_number].enemys.len() == 0{
+                self.formation_number+=1;
+            }
         }
     }
     pub fn draw(&self, canvas: &mut sdl2::render::Canvas<sdl2::video::Window>) -> Result<(), String>{
-        self.formations[self.formation_number].draw(canvas).map_err(|e| e.to_string())?;
+        
+        if self.formation_number < self.formations.len(){
+            self.formations[self.formation_number].draw(canvas).map_err(|e| e.to_string())?;
+        }
         Ok(())
     }
 }

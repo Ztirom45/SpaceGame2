@@ -102,7 +102,7 @@ fn main() -> Result<(), String> /*Error Handling*/{
         .map_err(|e| e.to_string())?;
     let text_hard_size = surface_font_hard.size();
     let surface_font_help = font
-        .render("Space to start / [W,S], to select modes / controll with [W,A,S,D,SPACE]")
+        .render("Return to start / [W,S], to select modes / controll with [W,A,S,D,SPACE]")
         .blended(font_color)
         .map_err(|e| e.to_string())?;
     let text_help_size = surface_font_help.size();
@@ -183,7 +183,7 @@ fn main() -> Result<(), String> /*Error Handling*/{
                     ..
                 } => break 'running,
                 Event::KeyDown{
-                    keycode: Some(Keycode::Space),
+                    keycode: Some(Keycode::Return),
                     ..
                 }=>{
                     if menu_active{
